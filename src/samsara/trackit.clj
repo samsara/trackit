@@ -326,13 +326,16 @@
   (println "TRACKit!: no reporting method selected."))
 
 
-(defmethod start-reporting :console [{:keys [seconds] :or {seconds 300}}]
+(defmethod start-reporting :console
+  [{:keys [seconds] :or {seconds 300}}]
   (console/start (console/reporter *registry* {}) seconds))
 
 
-(defmethod start-reporting :graphite [{:keys [seconds host port prefix rate-unit duration-unit]
-                                       :or  {seconds 10, host "localhost", port 2003, prefix "trackit"
-                                             rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS}}]
+(defmethod start-reporting :graphite
+  [{:keys [seconds host port prefix rate-unit duration-unit]
+    :or  {seconds 10, host "localhost", port 2003, prefix "trackit"
+          rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS}}]
+
   (console/start
    (graphite/reporter *registry*
                       {:host host

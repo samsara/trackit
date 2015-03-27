@@ -3122,11 +3122,14 @@ net.brehaut.ClojureTools = (function (SH) {
 </td><td class="codes"><pre class="brush: clojure">(defmulti start-reporting :type)</pre></td></tr><tr><td class="docs">
 </td><td class="codes"><pre class="brush: clojure">(defmethod start-reporting :default [cfg]
   (println &quot;TRACKit!: no reporting method selected.&quot;))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(defmethod start-reporting :console [{:keys [seconds] :or {seconds 300}}]
+</td><td class="codes"><pre class="brush: clojure">(defmethod start-reporting :console
+  [{:keys [seconds] :or {seconds 300}}]
   (console/start (console/reporter *registry* {}) seconds))</pre></td></tr><tr><td class="docs">
-</td><td class="codes"><pre class="brush: clojure">(defmethod start-reporting :graphite [{:keys [seconds host port prefix rate-unit duration-unit]
-                                       :or  {seconds 10, host &quot;localhost&quot;, port 2003, prefix &quot;trackit&quot;
-                                             rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS}}]
+</td><td class="codes"><pre class="brush: clojure">(defmethod start-reporting :graphite
+  [{:keys [seconds host port prefix rate-unit duration-unit]
+    :or  {seconds 10, host &quot;localhost&quot;, port 2003, prefix &quot;trackit&quot;
+          rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS}}]
+
   (console/start
    (graphite/reporter *registry*
                       {:host host
