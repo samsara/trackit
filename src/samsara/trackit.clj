@@ -165,8 +165,9 @@
   "
   [name]
   (let [metric (mm/meter *registry* (namer name))]
-    (fn []  (mm/mark! metric))
-    (fn [n] (mm/mark! metric n))))
+    (fn
+      ([]  (mm/mark! metric))
+      ([n] (mm/mark! metric n)))))
 
 
 (defmacro track-rate
