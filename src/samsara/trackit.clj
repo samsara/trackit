@@ -155,10 +155,18 @@
       (defn request-handler [req]
         (track-request-rate)
         (comment handle the request))
+
+  If the step is bigger than 1 then you can specify a size:
+
+      ;; in your request handler
+      (defn request-handler [req]
+        (track-request-size-rate (get-size req))
+        (comment handle the request))
   "
   [name]
   (let [metric (mm/meter *registry* (namer name))]
-    (fn []  (mm/mark! metric))))
+    (fn []  (mm/mark! metric))
+    (fn [n] (mm/mark! metric n))))
 
 
 (defmacro track-rate
@@ -313,7 +321,8 @@
 
 (defn all-metrics []
   (->> (into {} (.getMetrics *registry*))
-       (map (juxt first (comp current-value-of second) (comp str-current-value-of second)))
+       (map (juxt first (comp current-value-of second)
+                  (comp str-current-value-of second)))
        (map (partial zipmap [:metric :value :display]))))
 
 
