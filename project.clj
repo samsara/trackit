@@ -5,6 +5,6 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
   :dependencies [[org.clojure/clojure "1.6.0"]
                  [metrics-clojure "2.4.0"]
-                 [metrics-clojure-graphite "2.4.0"]
-                 ]
+                 [metrics-clojure-graphite "2.4.0"]]
+
   :plugins [[lein-marginalia "0.8.0"]])

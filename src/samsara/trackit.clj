@@ -1,14 +1,12 @@
 (ns samsara.trackit
+  (:require [samsara.trackit.util :refer :all]
+            [samsara.trackit.reporter :as rep])
   (:require [metrics.core :refer [new-registry]]
             [metrics.counters :as mc]
             [metrics.gauges :as mg]
             [metrics.meters :as mm]
             [metrics.histograms :as mh]
-            [metrics.timers :as mt]
-            [metrics.reporters.console :as console])
-  (:require [metrics.reporters.graphite :as graphite])
-  (:import  [java.util.concurrent TimeUnit])
-  (:import  [com.codahale.metrics MetricFilter])
+            [metrics.timers :as mt])
   (:require [clojure.pprint :refer [print-table] :as pp]))
 
 (def ^:dynamic *registry* (new-registry))
@@ -17,6 +15,9 @@
 
 (defn set-base-metrics-name! [name1 name2]
   (alter-var-root #'*base-name* (constantly [name1 name2])))
+
+(defn init-registry! []
+  (alter-var-root #'*registry* (constantly (new-registry))))
 
 (defn- namer [name]
   (if-not (string? name)
@@ -137,6 +138,7 @@
   `(track-value-of ~name (fn [] ~@body)))
 
 
+
 ;;
 ;; # Tracking how often something happens (rate and distribution)
 ;;
@@ -168,6 +170,7 @@
     (fn
       ([]  (mm/mark! metric))
       ([n] (mm/mark! metric n)))))
+
 
 
 (defmacro track-rate
@@ -224,6 +227,7 @@
     (fn [v] (mh/update! metric v))))
 
 
+
 (defmacro track-distribution
   "It tracks the distribution of a metric. It expect that the body
   returns either a number or a countable collection.
@@ -278,79 +282,43 @@
              ~@body))
 
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; helper functions
 
-(defprotocol MetricsValue
-  (current-value-of [metric]
-    "Returns the current value of a metric as a map specification of the value")
-  (str-current-value-of [metric]
-    "Returns a string represantation of the current value good for display in a table"))
+
+(defn all-metrics
+  "Returns a list of all metrics with their current value and a formatted value"
+  ([] (all-metrics *registry*))
+  ([registry]
+   (->> (into {} (.getMetrics registry))
+        (map (juxt first
+                   (comp metric-type second)
+                   (comp current-value-of second)
+                   (comp display-short-value-of second)
+                   (comp display-value-of second)))
+        (map (partial zipmap [:metric :type :value :short :display]))
+        (sort-by first))))
 
 
-(extend-protocol MetricsValue
-  com.codahale.metrics.Counter
-  (current-value-of     [metric] {:count (mc/value metric)})
-  (str-current-value-of [metric] (str (mc/value metric) )))
+(defn show-stats
+  "Prints the current list of metrics with their values.
+  Optionally you can pass a parameter `format` which
+  changes the level of information displayed for every metric.
+  `format` can be: `:short` or `:full`, `:short` is the default.
+
+     (show-stats)       ;; prints list of stats with short value
+     (show-stats :full) ;; prints list of stats with detailed value
+  "
+  ([] (show-stats :short))
+  ([format]
+   (if (= :full format)
+     (print-table [:metric :type :display] (all-metrics))
+     (print-table [:metric :type :short]   (all-metrics)))))
 
 
-(extend-protocol MetricsValue
-  com.codahale.metrics.Gauge
-  (current-value-of     [metric] {:count (mg/value metric)})
-  (str-current-value-of [metric] (str (mg/value metric) )))
-
-
-(extend-protocol MetricsValue
-  com.codahale.metrics.Meter
-  (current-value-of     [metric] (mm/rates metric))
-  (str-current-value-of [metric] (str (mm/rate-one metric)
-                                      " evs/s (n: " (mm/count metric) ")")))
-
-
-(extend-protocol MetricsValue
-  com.codahale.metrics.Histogram
-  (current-value-of     [metric] (mh/percentiles metric))
-  (str-current-value-of [metric] (str (get (mh/percentiles metric) 0.99 0)
-                                      " (99%/n:" (mh/number-recorded metric) ")")))
-
-
-(extend-protocol MetricsValue
-  com.codahale.metrics.Timer
-  (current-value-of     [metric] (mt/percentiles metric))
-  (str-current-value-of [metric] (str (quot (get (mt/percentiles metric) 0.99 0) 1000000)
-                                      "ms (99%/n:" (mt/number-recorded metric) ")")))
-
-
-(defn all-metrics []
-  (->> (into {} (.getMetrics *registry*))
-       (map (juxt first (comp current-value-of second)
-                  (comp str-current-value-of second)))
-       (map (partial zipmap [:metric :value :display]))))
-
-
-(defn show-stats []
-  (print-table [:metric :display] (all-metrics)))
-
-(defmulti start-reporting :type)
-
-(defmethod start-reporting :default [cfg]
-  (println "TRACKit!: no reporting method selected."))
-
-
-(defmethod start-reporting :console
-  [{:keys [seconds] :or {seconds 300}}]
-  (console/start (console/reporter *registry* {}) seconds))
-
-
-(defmethod start-reporting :graphite
-  [{:keys [seconds host port prefix rate-unit duration-unit]
-    :or  {seconds 10, host "localhost", port 2003, prefix "trackit"
-          rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS}}]
-
-  (console/start
-   (graphite/reporter *registry*
-                      {:host host
-                       :port port
-                       :prefix prefix
-                       :rate-unit rate-unit
-                       :duration-unit duration-unit})
-   seconds))
+(defn start-reporting!
+  "Initialize reporting to selected backend"
+  ([cfg]
+   (start-reporting! *registry* cfg))
+  ([registry cfg]
+   (rep/start-reporting registry cfg)))
