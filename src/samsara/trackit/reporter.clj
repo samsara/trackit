@@ -1,11 +1,12 @@
 (ns samsara.trackit.reporter
+  (:import  [java.util.concurrent TimeUnit]
+            [com.codahale.metrics MetricFilter])
   (:require [metrics.reporters.graphite :as graphite]
             [metrics.reporters.console :as console]
-            [metrics.reporters.ganglia :as ganglia])
-  (:import  [java.util.concurrent TimeUnit])
-  (:import  [com.codahale.metrics MetricFilter])
-  (:import  [java.util.concurrent TimeUnit]
-            [com.codahale.metrics.riemann RiemannReporter Riemann]
+            #_[metrics.reporters.ganglia :as ganglia])
+  (:import  [com.codahale.metrics.ganglia GangliaReporter]
+            [info.ganglia.gmetric4j.gmetric GMetric GMetric$UDPAddressingMode])
+  (:import  [com.codahale.metrics.riemann RiemannReporter Riemann]
             [com.aphyr.riemann.client RiemannClient])
 
   #_(:import  [com.bealetech.metrics.reporting StatsdReporter Statsd]))
@@ -74,13 +75,16 @@
 
 
 
-(comment
- (defmethod start-reporting :ganglia
-   [registry
-    {:keys [reporting-frequency-minutes host port prefix rate-unit duration-unit]
-     :or  {reporting-frequency-minutes 1, host "localhost", port 8649, prefix "trackit"
-           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
+(defmethod start-reporting :ganglia
+  [registry
+   {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
+      :or  {reporting-frequency-seconds 60, host "localhost", port 8649, prefix "trackit"
+            rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-   (ganglia/start
-    (ganglia/reporter registry cfg)
-    reporting-frequency-minutes)))
+    (-> (GangliaReporter/forRegistry registry)
+        (.prefixedWith prefix)
+        (.convertDurationsTo duration-unit)
+        (.convertRatesTo rate-unit)
+        (.filter MetricFilter/ALL)
+        (.build (GMetric. host (int port) GMetric$UDPAddressingMode/MULTICAST 1))
+        (.start reporting-frequency-seconds TimeUnit/SECONDS)))

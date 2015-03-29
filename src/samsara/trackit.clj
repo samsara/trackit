@@ -283,9 +283,6 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; helper functions
-
-
 (defn all-metrics
   "Returns a list of all metrics with their current value and a formatted value"
   ([] (all-metrics *registry*))
@@ -298,6 +295,7 @@
                    (comp display-value-of second)))
         (map (partial zipmap [:metric :type :value :short :display]))
         (sort-by first))))
+
 
 
 (defn show-stats
@@ -322,10 +320,3 @@
    (start-reporting! *registry* cfg))
   ([registry cfg]
    (rep/start-reporting registry cfg)))
-
-
-(comment
-  ((make-rate-tracker "simple.rate.tracker") (rand-int 100))
-  (show-stats)
-  (start-reporting! {:type :ganglia :host "docker" })
-  )
