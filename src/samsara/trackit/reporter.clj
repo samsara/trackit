@@ -1,8 +1,14 @@
 (ns samsara.trackit.reporter
   (:require [metrics.reporters.graphite :as graphite]
-            [metrics.reporters.console :as console])
+            [metrics.reporters.console :as console]
+            [metrics.reporters.ganglia :as ganglia])
   (:import  [java.util.concurrent TimeUnit])
-  (:import  [com.codahale.metrics MetricFilter]))
+  (:import  [com.codahale.metrics MetricFilter])
+  (:import  [java.util.concurrent TimeUnit]
+            [com.codahale.metrics.riemann RiemannReporter Riemann]
+            [com.aphyr.riemann.client RiemannClient])
+
+  #_(:import  [com.bealetech.metrics.reporting StatsdReporter Statsd]))
 
 (defmulti start-reporting (fn [registry cfg] (:type cfg)))
 
@@ -33,3 +39,48 @@
   (graphite/start
    (graphite/reporter registry cfg)
    reporting-frequency-seconds))
+
+(comment
+  (defmethod start-reporting :statsd
+    [registry
+     {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
+      :or  {reporting-frequency-seconds 10, host "localhost", port 8125, prefix "trackit"
+            rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
+
+    (-> (StatsdReporter/forRegistry registry)
+        (.prefixedWith prefix)
+        (.convertDurationsTo duration-unit)
+        (.convertRatesTo rate-unit)
+        (.filter MetricFilter/ALL)
+        (.build (Statsd. host port))
+        (.start reporting-frequency-seconds TimeUnit/SECONDS))))
+
+
+
+(defmethod start-reporting :riemann
+    [registry
+     {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
+      :or  {reporting-frequency-seconds 10, host "localhost", port 5555, prefix "trackit"
+            rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
+
+    (-> (RiemannReporter/forRegistry registry)
+        (.prefixedWith prefix)
+        (.convertDurationsTo duration-unit)
+        (.convertRatesTo rate-unit)
+        (.useSeparator ".")
+        (.filter MetricFilter/ALL)
+        (.build (Riemann. host (int port)))
+        (.start reporting-frequency-seconds TimeUnit/SECONDS)))
+
+
+
+(comment
+ (defmethod start-reporting :ganglia
+   [registry
+    {:keys [reporting-frequency-minutes host port prefix rate-unit duration-unit]
+     :or  {reporting-frequency-minutes 1, host "localhost", port 8649, prefix "trackit"
+           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
+
+   (ganglia/start
+    (ganglia/reporter registry cfg)
+    reporting-frequency-minutes)))

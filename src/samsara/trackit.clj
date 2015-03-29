@@ -16,7 +16,7 @@
 (defn set-base-metrics-name! [name1 name2]
   (alter-var-root #'*base-name* (constantly [name1 name2])))
 
-(defn init-registry! []
+(defn reset-registry! []
   (alter-var-root #'*registry* (constantly (new-registry))))
 
 (defn- namer [name]
@@ -322,3 +322,10 @@
    (start-reporting! *registry* cfg))
   ([registry cfg]
    (rep/start-reporting registry cfg)))
+
+
+(comment
+  ((make-rate-tracker "simple.rate.tracker") (rand-int 100))
+  (show-stats)
+  (start-reporting! {:type :ganglia :host "docker" })
+  )
