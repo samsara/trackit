@@ -4,6 +4,22 @@ A Clojure library designed to ... well, that part is up to you.
 
 ## Usage
 
+This library is not yet available in Clojars..
+
+Load the namespace in the REPL
+
+```clojure
+(use 'samsara.trackit)
+```
+or as part of your namespace
+
+```clojure
+(ns my.project
+  (:require [samsara.trackit :refer :all])
+```
+
+Now you can start count, track rates, track values etc.
+
 ### Counting things
 
 The function `count-tracker` is used to produce counters.
