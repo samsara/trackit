@@ -1,10 +1,12 @@
 # TRACKit!
 
-A Clojure library designed to ... well, that part is up to you.
+A Clojure wrapper for Yammer's Metrics library.
+The objective of this library is to try to make as simple as possible
+to track metrics inside your app.
 
 ## Usage
 
-This library is not yet available in Clojars..
+**This library is not yet available in Clojars yet..**
 
 Load the namespace in the REPL
 
