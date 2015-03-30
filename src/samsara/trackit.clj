@@ -36,7 +36,7 @@
 ;; # Counting things
 ;;
 
-(defn make-count-tracker
+(defn count-tracker
   "It returns a function which traces the number of times it is called
   or the number of items seen.
   A counter is a monotonically increasing number. All counters are
@@ -46,7 +46,7 @@
 
 
      ;; create the counter
-     (def track-orders (make-count-tracker \"orders.processed\"))
+     (def track-orders (count-tracker \"orders.processed\"))
 
      ;; use the counter
      (defn mark-order-as-processed [& args]
@@ -60,7 +60,7 @@
   Eample:
 
      ;; create the counter
-     (def track-order-items (make-count-tracker \"items.processed\"))
+     (def track-order-items (count-tracker \"items.processed\"))
 
      ;; use the counter
      (defn mark-order-as-processed [{items :items :as order}]
@@ -143,7 +143,7 @@
 ;; # Tracking how often something happens (rate and distribution)
 ;;
 
-(defn make-rate-tracker
+(defn rate-tracker
   "It returns a function which tracks how often an event happens.
   It is useful to track things such as: number of request per second,
   number of db-query per second, number of orders per minute etc.
@@ -151,7 +151,7 @@
   usage:
 
       ;; initialize tracker
-      (def track-request-rate (make-rate-tracker \"user.requests\"))
+      (def track-request-rate (rate-tracker \"user.requests\"))
 
       ;; in your request handler
       (defn request-handler [req]
@@ -197,7 +197,7 @@
 ;; # Tracking a distribution (histograms/percentiles)
 ;;
 
-(defn make-distribution-tracker
+(defn distribution-tracker
   "It returns a function which takes a value as parameter
   and it tracks its distribution.
   Whenever you are looking for an average, an histogram
@@ -213,7 +213,7 @@
   usage:
 
      ;; initialize tracker
-     (def track-search-results (make-distribution-tracker \"search.results\"))
+     (def track-search-results (distribution-tracker \"search.results\"))
 
      ;; track searches
      (defn my-search [query]

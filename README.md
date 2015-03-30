@@ -6,7 +6,7 @@ A Clojure library designed to ... well, that part is up to you.
 
 ### Counting things
 
-The function `make-count-tracker` is used to produce counters.
+The function `count-tracker` is used to produce counters.
 A counter is a monotonically increasing (or decreasing) number. All counters are updated atomically.
 It returns a function which traces the number of times it is called or the number of items seen. 
 
@@ -14,7 +14,7 @@ Usage example:
 
 ```clojure
  ;; create the counter
- (def track-orders (make-count-tracker "orders.processed"))
+ (def track-orders (count-tracker "orders.processed"))
 
  ;; use the counter
  (defn mark-order-as-processed [& args]
@@ -29,7 +29,7 @@ Eample:
 
 ```clojure
  ;; create the counter
- (def track-order-items (make-count-tracker "items.processed"))
+ (def track-order-items (count-tracker "items.processed"))
 
  ;; use the counter
  (defn mark-order-as-processed [{items :items :as order}]
@@ -71,19 +71,30 @@ It tracks the current value of a function. This is useful to measure stats at re
 
 ## Tracking how often something happens (rate)
 
-If you have to track the frequency of something, you can use the `make-rate-tracker`.
+If you have to track the frequency of something, you can use the `rate-tracker`.
 It returns a function which tracks how often an event happens. It is useful to track things such as: number of request per second, number of db-query per second, number of orders per minute etc.
 
 usage:
 
 ```clojure
   ;; initialize tracker
-  (def track-request-rate (make-rate-tracker "user.requests"))
+  (def track-request-rate (rate-tracker "user.requests"))
 
   ;; in your request handler
   (defn request-handler [req]
     (track-request-rate)
     (comment handle the request))
+```
+
+If you are handling a batch of item rather than a single request you
+can pass the a number in the returned function like:
+
+```clojure
+(def track-documents-rate (rate-tracker "indexer.documents.indexed"))
+
+(defn store-documents [ documents-batch ]
+  (track-documents-rate (count documents-batch)
+  (comment then do store the batch of documents in db))
 ```
 
 With the macro you can do the same over the execution of a block of code.
@@ -102,7 +113,7 @@ usage:
 
 If you want to know the average of some quantity then the distribution tracker provides
 a better result.
-`make-distribution-tracker` returns a function which takes a value as parameter and it tracks its distribution.
+`distribution-tracker` returns a function which takes a value as parameter and it tracks its distribution.
 Whenever you are looking for an average, an histogram gives you more information. So rather than looking at:
 
 *The average search result is 120 items*
@@ -115,7 +126,7 @@ usage:
 
 ```clojure
  ;; initialize tracker
- (def track-search-results (make-distribution-tracker "search.results"))
+ (def track-search-results (distribution-tracker "search.results"))
 
  ;; track searches
  (defn my-search [query]
@@ -154,6 +165,18 @@ This is useful to measure things such as: the time it takes to query the databas
 ```
 It returns the result of body execution.
 
+### Read the stats
+
+To obtain the current value of all the metrics you are collecting
+you can use `all-metrics` which will return a list with all metrics.
+
+With `show-stats` you'll be able to print all the metrics in the std-output
+in a tabular format. By default it displays a short version. For a more
+complete output use:
+
+```clojure
+(show-stats :full)
+```
 ## License
 
 Copyright © 2015 Samsara's authors.
