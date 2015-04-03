@@ -19,7 +19,7 @@
 (defn reset-registry! []
   (alter-var-root #'*registry* (constantly (new-registry))))
 
-(defn- namer [name]
+(defn namer [name]
   (if-not (string? name)
     name
     (let [sections  (clojure.string/split name #"\.")

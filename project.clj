@@ -1,4 +1,4 @@
-(defproject samsara/trackit "0.2.0-SNAPSHOT"
+(defproject samsara/trackit "0.1.1"
   :description "TRACKit! A Clojure wrapper for Yammer Metric library"
   :url "https://github.com/samsara/trackit"
   :license {:name "Apache License 2.0"
@@ -17,4 +17,5 @@
 
   :plugins [[lein-marginalia "0.8.0"]]
 
-  :deploy-repositories[["clojars" {:url "https://clojars.org/repo/"                                                       :sign-releases false}]])
+  :deploy-repositories[["clojars" {:url "https://clojars.org/repo/"
+                                   :sign-releases false}]])
