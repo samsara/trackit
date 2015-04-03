@@ -6,7 +6,12 @@ to track metrics inside your app.
 
 ## Usage
 
-**This library is not yet available in Clojars yet..**
+To use TRACKit! you need to add the following dependency to your
+`project.clj` file.
+
+```
+[samsara/trackit "0.1.0"]
+```
 
 Load the namespace in the REPL
 
