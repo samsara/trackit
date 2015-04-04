@@ -19,6 +19,7 @@
 (defn reset-registry! []
   (alter-var-root #'*registry* (constantly (new-registry))))
 
+;; TODO: review naming strategy, not really convinced about this
 (defn namer [name]
   (if-not (string? name)
     name

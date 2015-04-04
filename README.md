@@ -198,8 +198,119 @@ in a tabular format. By default it displays a short version. For a more
 complete output use:
 
 ```clojure
+
+;; get the list of all metrics
+(def metrics (all-mentrics))
+
+;; display stats wil only main metrics values
+(show-stats)
+
+;; display stats with more details
 (show-stats :full)
 ```
+
+### Start reporting
+
+TRACKit! supports several reporting methods.
+
+Reporting is activated with:
+
+```clojure
+(start-reporting! cfg)
+```
+
+The configuration will contain a element `:type` which will define
+which backend system will be used to report the metrics.
+Each different backend has a different set of configuration options.
+See here the details.
+
+#### Console
+
+```clojure
+(start-reporting!
+   {:type                        :console 
+    ;; how often the stats will be displayed
+    :reporting-frequency-seconds 300
+    ;; which output stream should be used stdout or stderr
+    :stream                      (System/err)
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS })
+```
+
+#### Graphite
+
+```clojure
+(start-reporting!
+   {:type                        :graphite
+    ;; how often the stats will be reported to the server
+    :reporting-frequency-seconds 10
+    ;; graphite host and port
+    :host                        "localhost"
+    :port                        2003
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; prefix to add to all metrics
+    :prefix                      "trackit"})
+```
+
+#### Statsd
+
+```clojure
+(start-reporting!
+   {:type                        :statsd
+    ;; how often the stats will be reported to the server
+    :reporting-frequency-seconds 10
+    ;; graphite host and port
+    :host                        "localhost"
+    :port                        8125
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; prefix to add to all metrics
+    :prefix                      "trackit"})
+```
+
+#### Riemann
+
+```clojure
+(start-reporting!
+   {:type                        :riemann
+    ;; how often the stats will be reported to the server
+    :reporting-frequency-seconds 10
+    ;; graphite host and port
+    :host                        "localhost"
+    :port                        5555
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; prefix to add to all metrics
+    :prefix                      "trackit"})
+```
+
+#### Ganglia
+
+```clojure
+(start-reporting!
+   {:type                        :ganglia
+    ;; how often the stats will be reported to the server
+    :reporting-frequency-seconds 60
+    ;; graphite host and port
+    :host                        "localhost"
+    :port                        8649
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; prefix to add to all metrics
+    :prefix                      "trackit"})
+```
+
 ## License
 
 Copyright © 2015 Samsara's authors.
