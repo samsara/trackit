@@ -264,7 +264,7 @@ See here the details.
    {:type                        :statsd
     ;; how often the stats will be reported to the server
     :reporting-frequency-seconds 10
-    ;; graphite host and port
+    ;; statsd host and port
     :host                        "localhost"
     :port                        8125
     ;; unit to use to display rates
@@ -282,7 +282,7 @@ See here the details.
    {:type                        :riemann
     ;; how often the stats will be reported to the server
     :reporting-frequency-seconds 10
-    ;; graphite host and port
+    ;; riemann host and port
     :host                        "localhost"
     :port                        5555
     ;; unit to use to display rates
@@ -300,7 +300,7 @@ See here the details.
    {:type                        :ganglia
     ;; how often the stats will be reported to the server
     :reporting-frequency-seconds 60
-    ;; graphite host and port
+    ;; ganglia host and port
     :host                        "localhost"
     :port                        8649
     ;; unit to use to display rates
