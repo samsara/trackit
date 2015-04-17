@@ -1,6 +1,6 @@
 # TRACKit!
 
-A Clojure wrapper for Yammer's Metrics library.
+A Clojure developer friendly wrapper for Yammer's Metrics library.
 The objective of this library is to try to make as simple as possible
 to track metrics inside your app.
 
@@ -10,7 +10,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit "0.1.0"]
+[samsara/trackit "0.2.0"]
 ```
 
 Load the namespace in the REPL
@@ -60,13 +60,29 @@ Eample:
    (comment do something else))
 ```
 
-A convenience marco is also available which counts the number of time the body is executed. A counter is a monotonically increasing number. All counters are updated atomically.
+A convenience fucntion is also available which counts the number of time the body is executed. A counter is a monotonically increasing number. All counters are updated atomically.
 
 ```clojure
- ;; use the counter
- (defn mark-order-as-processed [& args]
-   (track-count "orders.processed"    ;; count body executions
-     (comment do something else)))
+;; use the counter
+(defn mark-order-as-processed [& args]
+  (track-count \"orders.processed\")
+  (comment do something else))
+
+;; use the counter with a give increment
+(defn process-order [{items :items :as order}]
+  (track-count \"orders.items.count\" (count items))
+  (comment do something else))
+
+```
+
+If you are only interested in counting how many times a piece of code
+is executed then you can use the following macro.
+
+```Clojure
+;; use the counter
+(defn mark-order-as-processed [& args]
+  (track-pass-count \"orders.processed\"    ;; count body executions
+    (comment do something else)))
 ```
 
 ### Tracking current value of something
@@ -100,13 +116,13 @@ It returns a function which tracks how often an event happens. It is useful to t
 usage:
 
 ```clojure
-  ;; initialize tracker
-  (def track-request-rate (rate-tracker "user.requests"))
+;; initialize tracker
+(def track-request-rate (rate-tracker \"user.requests\"))
 
-  ;; in your request handler
-  (defn request-handler [req]
-    (track-request-rate)
-    (comment handle the request))
+;; in your request handler
+(defn request-handler [req]
+  (track-request-rate)
+  (comment handle the request))
 ```
 
 If you are handling a batch of item rather than a single request you
@@ -116,8 +132,26 @@ can pass the a number in the returned function like:
 (def track-documents-rate (rate-tracker "indexer.documents.indexed"))
 
 (defn store-documents [ documents-batch ]
-  (track-documents-rate (count documents-batch)
+  (track-documents-rate (count documents-batch))
   (comment then do store the batch of documents in db))
+```
+
+You can inline your tracker in with the `track-rate` function.
+
+```clojure
+;; in your request handler
+(defn request-handler [req]
+  (track-rate \"user.requests\")
+  (comment handle the request))
+```
+
+Here with an arbitrary size.
+
+```clojure
+;; track the number of doc indexed
+(defn index-documents [documents]
+  (track-rate \"document.indexed\" (count documents))
+  (comment handle the request))
 ```
 
 With the macro you can do the same over the execution of a block of code.
@@ -128,7 +162,7 @@ usage:
 ```clojure
   ;; in your request handler
   (defn request-handler [req]
-    (track-rate "user.requests"
+    (track-pass-rate "user.requests"
       (comment handle the request)))
 ```
 
@@ -158,21 +192,38 @@ usage:
      results)))
 ```
 
-Again you can achieve the same with the convenience macro.
+Again you can achieve the same with the convenience function.
 If you have a code block which return a collection or a number
 you can track the distribution as:
 
 ```clojure
- ;; track searches
- (defn my-search [query]
-   (track-distribution "search.results"
-     (execute query)))
+;; track searches
+(defn my-search [query]
+  (let [results (execute query)]
+    (track-distribution \"search.results\" (count results))
+    results))
 ```
 
-The macro will take the result of the code block, and
-if it is a number will update the distribution with the result,
-if the value is a collection then will count the number of elements.
-Finally, it returns the result of the body execution.
+Typically the thing you want to track is going to be either
+a straight number or something countable.
+So rather than having to wrap the the result into a let,
+you can pass the \"thing\" you want to track as the `value`
+parameter. If it is a number it will use its value,
+if values is a `seq`, a collection or anything you can `count`
+on it, it will run `(count value)` or an exception will be raised.
+Finally the `value` will be returned as result of the function.
+The following code is equivalent to the previous one,
+but much clearer.
+
+```clojure
+;; track searches
+(defn my-search [query]
+  (track-distribution \"search.results\"
+    (execute query)))
+```
+
+It returns the result of the `body` execution.
+
 
 ### Tracking how long it takes to do something
 

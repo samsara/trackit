@@ -70,13 +70,14 @@
   "
   [name]
   (let [metric (mc/counter *registry* (namer name))]
-    (fn ([]  (mc/inc! metric))
-       ([v] (mc/inc! metric v)))))
+    (fn ([]  (mc/inc! metric)   1)
+       ([v] (mc/inc! metric v) v))))
 
 
 
-(defmacro track-count
-  "It counts the number of time the body is executed.
+(defn track-count
+  "It increments a counter by the given value. If the counter
+  doesn't exist it creates one. It returns the value passed.
   A counter is a monotonically increasing number. All counters are
   updated atomically.
 
@@ -84,7 +85,33 @@
 
      ;; use the counter
      (defn mark-order-as-processed [& args]
-       (track-count \"orders.processed\"    ;; count body executions
+       (track-count \"orders.processed\")
+       (comment do something else))
+
+     ;; use the counter with a give increment
+     (defn process-order [{items :items :as order}]
+       (track-count \"orders.items.count\" (count items))
+       (comment do something else))
+
+  "
+  ([name]
+   ((count-tracker name)))
+  ([name count]
+   ((count-tracker name) count)))
+
+
+
+(defmacro track-pass-count
+  "It counts the number of time the body is executed. The increment
+  is always by 1.
+  A counter is a monotonically increasing number. All counters are
+  updated atomically.
+
+  Usage example:
+
+     ;; use the counter
+     (defn mark-order-as-processed [& args]
+       (track-pass-count \"orders.processed\"    ;; count body executions
          (comment do something else)))
 
   "
@@ -165,16 +192,43 @@
       (defn request-handler [req]
         (track-request-size-rate (get-size req))
         (comment handle the request))
+
   "
   [name]
   (let [metric (mm/meter *registry* (namer name))]
     (fn
-      ([]  (mm/mark! metric))
-      ([n] (mm/mark! metric n)))))
+      ([]  (mm/mark! metric) 1)
+      ([n] (mm/mark! metric n) n))))
 
 
 
-(defmacro track-rate
+(defn track-rate
+  "It tracks the rate of a give of value
+  It is useful to track things such as: number of request per second,
+  number of db-query per second, number of orders per minute etc.
+
+  usage:
+
+      ;; in your request handler
+      (defn request-handler [req]
+        (track-rate \"user.requests\")
+        (comment handle the request))
+
+
+      ;; track the number of doc indexed
+      (defn index-documents [documents]
+        (track-rate \"document.indexed\" (count documents))
+        (comment handle the request))
+
+  "
+  ([name]
+   ((rate-tracker name)))
+  ([name count]
+   ((rate-tracker name) count)))
+
+
+
+(defmacro track-pass-rate
   "It tracks the rate of the body execution.
   It is useful to track things such as: number of request per second,
   number of db-query per second, number of orders per minute etc.
@@ -229,9 +283,8 @@
 
 
 
-(defmacro track-distribution
-  "It tracks the distribution of a metric. It expect that the body
-  returns either a number or a countable collection.
+(defn track-distribution
+  "It tracks the distribution of a value, and it returns `value`.
   Whenever you are looking for an average, an histogram
   gives you more information.
   So rather than looking at:
@@ -246,17 +299,34 @@
 
      ;; track searches
      (defn my-search [query]
+       (let [results (execute query)]
+         (track-distribution \"search.results\" (count results))
+         results))
+
+  Typically the thing you want to track is going to be either
+  a straight number or something countable.
+  So rather than having to wrap the the result into a let,
+  you can pass the \"thing\" you want to track as the `value`
+  parameter. If it is a number it will use its value,
+  if values is a `seq`, a collection or anything you can `count`
+  on it, it will run `(count value)` or an exception will be raised.
+  Finally the `value` will be returned as result of the function.
+  The following code is equivalent to the previous one,
+  but much clearer.
+
+     ;; track searches
+     (defn my-search [query]
        (track-distribution \"search.results\"
          (execute query)))
 
   It returns the result of the `body` execution.
   "
-  [name & body]
-  `(let [result# (do ~@body)]
-     (mh/update! (mh/histogram *registry* (namer ~name))
-                 (if (number? result#) result# (count result#)))
-     ;; return result
-     result#))
+  [name value]
+  ((distribution-tracker name)
+   (if (number? value) value (count value)))
+  ;; return result
+  value)
+
 
 ;;
 ;; # Tracking how long it takes to do something

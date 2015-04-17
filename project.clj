@@ -1,5 +1,5 @@
-(defproject samsara/trackit "0.1.1"
-  :description "TRACKit! A Clojure wrapper for Yammer Metric library"
+(defproject samsara/trackit "0.2.0"
+  :description "TRACKit! A Clojure developer friendly wrapper for Yammer's Metrics library."
   :url "https://github.com/samsara/trackit"
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
