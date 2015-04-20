@@ -65,12 +65,12 @@ A convenience fucntion is also available which counts the number of time the bod
 ```clojure
 ;; use the counter
 (defn mark-order-as-processed [& args]
-  (track-count \"orders.processed\")
+  (track-count "orders.processed")
   (comment do something else))
 
 ;; use the counter with a give increment
 (defn process-order [{items :items :as order}]
-  (track-count \"orders.items.count\" (count items))
+  (track-count "orders.items.count" (count items))
   (comment do something else))
 
 ```
@@ -81,7 +81,7 @@ is executed then you can use the following macro.
 ```Clojure
 ;; use the counter
 (defn mark-order-as-processed [& args]
-  (track-pass-count \"orders.processed\"    ;; count body executions
+  (track-pass-count "orders.processed"    ;; count body executions
     (comment do something else)))
 ```
 
@@ -117,7 +117,7 @@ usage:
 
 ```clojure
 ;; initialize tracker
-(def track-request-rate (rate-tracker \"user.requests\"))
+(def track-request-rate (rate-tracker "user.requests"))
 
 ;; in your request handler
 (defn request-handler [req]
@@ -141,7 +141,7 @@ You can inline your tracker in with the `track-rate` function.
 ```clojure
 ;; in your request handler
 (defn request-handler [req]
-  (track-rate \"user.requests\")
+  (track-rate "user.requests")
   (comment handle the request))
 ```
 
@@ -150,7 +150,7 @@ Here with an arbitrary size.
 ```clojure
 ;; track the number of doc indexed
 (defn index-documents [documents]
-  (track-rate \"document.indexed\" (count documents))
+  (track-rate "document.indexed" (count documents))
   (comment handle the request))
 ```
 
@@ -200,14 +200,14 @@ you can track the distribution as:
 ;; track searches
 (defn my-search [query]
   (let [results (execute query)]
-    (track-distribution \"search.results\" (count results))
+    (track-distribution "search.results" (count results))
     results))
 ```
 
 Typically the thing you want to track is going to be either
 a straight number or something countable.
 So rather than having to wrap the the result into a let,
-you can pass the \"thing\" you want to track as the `value`
+you can pass the "thing" you want to track as the `value`
 parameter. If it is a number it will use its value,
 if values is a `seq`, a collection or anything you can `count`
 on it, it will run `(count value)` or an exception will be raised.
@@ -218,7 +218,7 @@ but much clearer.
 ```clojure
 ;; track searches
 (defn my-search [query]
-  (track-distribution \"search.results\"
+  (track-distribution "search.results"
     (execute query)))
 ```
 
