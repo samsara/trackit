@@ -106,3 +106,18 @@
     (let [{mean :mean} (current-value-of metric)
           millis #(double (/ % 1000000))]
       (format "%.2fms" (millis mean)))))
+
+
+(defn as-metric [name metric]
+  (when metric
+    (->> metric
+         ((juxt (constantly name)
+                metric-type
+                current-value-of
+                display-short-value-of
+                display-value-of))
+         (zipmap [:metric :type :value :short :display]))))
+
+
+(defn metric-value [name metric]
+  (:value (as-metric name metric)))

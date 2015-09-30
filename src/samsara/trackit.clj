@@ -7,7 +7,8 @@
             [metrics.meters :as mm]
             [metrics.histograms :as mh]
             [metrics.timers :as mt])
-  (:require [clojure.pprint :refer [print-table] :as pp]))
+  (:require [clojure.pprint :refer [print-table] :as pp])
+  (:import  [com.codahale.metrics MetricRegistry]))
 
 (def ^:dynamic *registry* (new-registry))
 
@@ -359,14 +360,14 @@
   ([] (all-metrics *registry*))
   ([registry]
    (->> (into {} (.getMetrics registry))
-        (map (juxt first
-                   (comp metric-type second)
-                   (comp current-value-of second)
-                   (comp display-short-value-of second)
-                   (comp display-value-of second)))
-        (map (partial zipmap [:metric :type :value :short :display]))
-        (sort-by first))))
+        (map (fn [[k v]] (as-metric k v)))
+        (sort-by :name))))
 
+
+(defn get-metric
+  ([name] (get-metric *registry* name))
+  ([^MetricRegistry registry name]
+   (metric-value name (get (.getMetrics registry) name))))
 
 
 (defn show-stats
