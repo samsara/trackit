@@ -1,7 +1,7 @@
 (ns samsara.trackit
   (:require [samsara.trackit.util :refer :all]
             [samsara.trackit.reporter :as rep])
-  (:require [metrics.core :refer [new-registry]]
+  (:require [metrics.core :as m]
             [metrics.counters :as mc]
             [metrics.gauges :as mg]
             [metrics.meters :as mm]
@@ -10,7 +10,7 @@
   (:require [clojure.pprint :refer [print-table] :as pp])
   (:import  [com.codahale.metrics MetricRegistry]))
 
-(def ^:dynamic *registry* (new-registry))
+(def ^:dynamic *registry* (m/new-registry))
 
 (def ^:dynamic *base-name* ["app" "metrics"])
 
@@ -18,7 +18,7 @@
   (alter-var-root #'*base-name* (constantly [name1 name2])))
 
 (defn reset-registry! []
-  (alter-var-root #'*registry* (constantly (new-registry))))
+  (alter-var-root #'*registry* (constantly (m/new-registry))))
 
 ;; TODO: review naming strategy, not really convinced about this
 (defn namer [name]
@@ -33,6 +33,12 @@
        (= nsections 1) (conj *base-name* name)
        (= nsections 2) (concat [(first *base-name*)] sections)))))
 
+
+;;
+;; # Registry
+;;
+(defn new-registry []
+  (m/new-registry))
 
 ;;
 ;; # Counting things
