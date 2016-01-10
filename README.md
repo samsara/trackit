@@ -10,7 +10,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit "0.2.0"]
+[samsara/trackit "0.2.2"]
 ```
 
 Load the namespace in the REPL
