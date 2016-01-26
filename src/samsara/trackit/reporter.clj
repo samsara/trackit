@@ -7,7 +7,7 @@
   (:import  [com.codahale.metrics.ganglia GangliaReporter]
             [info.ganglia.gmetric4j.gmetric GMetric GMetric$UDPAddressingMode])
   (:import  [com.codahale.metrics.riemann RiemannReporter Riemann]
-            [com.aphyr.riemann.client RiemannClient])
+            [com.aphyr.riemann.client RiemannClient TcpTransport])
 
   #_(:import  [com.bealetech.metrics.reporting StatsdReporter Statsd]))
 
@@ -64,14 +64,20 @@
       :or  {reporting-frequency-seconds 10, host "localhost", port 5555, prefix "trackit"
             rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
+  (let [;; tell Riemann client to do not cache the dns name
+        rc (Riemann.
+            (RiemannClient.
+             (doto
+                 (TcpTransport. host (int port))
+               (-> .-cacheDns (.set false)))))]
     (-> (RiemannReporter/forRegistry registry)
         (.prefixedWith prefix)
         (.convertDurationsTo duration-unit)
         (.convertRatesTo rate-unit)
         (.useSeparator ".")
         (.filter MetricFilter/ALL)
-        (.build (Riemann. host (int port)))
-        (.start reporting-frequency-seconds TimeUnit/SECONDS)))
+        (.build rc)
+        (.start reporting-frequency-seconds TimeUnit/SECONDS))))
 
 
 
