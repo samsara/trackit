@@ -10,7 +10,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit "0.2.2"]
+[samsara/trackit "0.2.3"]
 ```
 
 Load the namespace in the REPL
@@ -31,7 +31,7 @@ Now you can start count, track rates, track values etc.
 
 The function `count-tracker` is used to produce counters.
 A counter is a monotonically increasing (or decreasing) number. All counters are updated atomically.
-It returns a function which traces the number of times it is called or the number of items seen. 
+It returns a function which traces the number of times it is called or the number of items seen.
 
 Usage example:
 
@@ -279,7 +279,7 @@ See here the details.
 
 ```clojure
 (start-reporting!
-   {:type                        :console 
+   {:type                        :console
     ;; how often the stats will be displayed
     :reporting-frequency-seconds 300
     ;; which output stream should be used stdout or stderr
@@ -367,4 +367,3 @@ See here the details.
 Copyright © 2015 Samsara's authors.
 
 Distributed under the Apache License v 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
-
