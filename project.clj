@@ -16,7 +16,4 @@
                  ;;[com.bealetech/metrics-statsd "3.0.0a"] ;; version not yet released
                  ]
 
-  :plugins [[lein-marginalia "0.8.0"]]
-
-  :deploy-repositories[["clojars" {:url "https://clojars.org/repo/"
-                                   :sign-releases false}]])
+  :plugins [[lein-marginalia "0.8.0"]])
