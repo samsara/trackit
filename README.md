@@ -260,6 +260,48 @@ complete output use:
 (show-stats :full)
 ```
 
+### JVM Instrumentation
+
+TRACKit! is able to publish metrics about the running JVM.
+This can be controlled via the `:jvm-metrics` which can be
+either `:all` or you can provide a list of JVM metrics you are
+interested in. (**by default `:all` metrics are instrumented**)
+
+Example:
+
+
+```clojure
+(start-reporting!
+   {:type        :console
+    ;; publish jvm metrics as well
+    :jvm-metrics :all
+    })
+```
+
+Alternatively you can specify which set of metrics you are
+interested in:
+
+```clojure
+(start-reporting!
+   {:type        :console
+    ;; publish jvm metrics groups listed below
+    :jvm-metrics [:memory :files :gc :threads :attributes]
+    })
+```
+
+For more reporting information look at the next section.
+
+If you wish to disable the JVM metrics instrumentation,
+then set `:jvm-metrics` to `:none`.
+
+```clojure
+(start-reporting!
+   {:type        :console
+    ;; to disable metrics instrumentation
+    :jvm-metrics :none
+    })
+```
+
 ### Start reporting
 
 TRACKit! supports several reporting methods.
@@ -278,6 +320,8 @@ See here the details.
 #### Console
 
 ```clojure
+(import 'java.util.concurrent.TimeUnit)
+
 (start-reporting!
    {:type                        :console
     ;; how often the stats will be displayed
@@ -293,6 +337,8 @@ See here the details.
 #### Graphite
 
 ```clojure
+(import 'java.util.concurrent.TimeUnit)
+
 (start-reporting!
    {:type                        :graphite
     ;; how often the stats will be reported to the server
@@ -311,6 +357,8 @@ See here the details.
 #### Statsd
 
 ```clojure
+(import 'java.util.concurrent.TimeUnit)
+
 (start-reporting!
    {:type                        :statsd
     ;; how often the stats will be reported to the server
@@ -329,6 +377,8 @@ See here the details.
 #### Riemann
 
 ```clojure
+(import 'java.util.concurrent.TimeUnit)
+
 (start-reporting!
    {:type                        :riemann
     ;; how often the stats will be reported to the server
@@ -347,6 +397,8 @@ See here the details.
 #### Ganglia
 
 ```clojure
+(import 'java.util.concurrent.TimeUnit)
+
 (start-reporting!
    {:type                        :ganglia
     ;; how often the stats will be reported to the server

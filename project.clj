@@ -1,12 +1,17 @@
-(defproject samsara/trackit "0.2.3"
-  :description "TRACKit! A Clojure developer friendly wrapper for Yammer's Metrics library."
+(defproject samsara/trackit "0.3.0"
+
+  :description
+  "TRACKit! A Clojure developer friendly wrapper for Yammer's Metrics library."
+
   :url "https://github.com/samsara/trackit"
+
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [metrics-clojure "2.5.0"]
-                 [metrics-clojure-graphite "2.5.0"]
+                 [metrics-clojure "2.6.1"]
+                 [metrics-clojure-graphite "2.6.1"]
+                 [metrics-clojure-jvm "2.6.1"]
                  #_[metrics-clojure-ganglia  "2.5.0"] ;; bug #71
                  [io.dropwizard.metrics/metrics-ganglia "3.1.1"]
                  [info.ganglia.gmetric4j/gmetric4j "1.0.10"]

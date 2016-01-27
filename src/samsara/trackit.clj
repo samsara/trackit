@@ -1,6 +1,7 @@
 (ns samsara.trackit
   (:require [samsara.trackit.util :refer :all]
-            [samsara.trackit.reporter :as rep])
+            [samsara.trackit.reporter :as rep]
+            [samsara.trackit.jvm-metrics :as jvm])
   (:require [metrics.core :as m]
             [metrics.counters :as mc]
             [metrics.gauges :as mg]
@@ -396,5 +397,8 @@
   "Initialize reporting to selected backend"
   ([cfg]
    (start-reporting! *registry* cfg))
-  ([registry cfg]
+  ([registry {:keys [jvm-metrics] :as cfg}]
+   ;; jvm instrumentation by default it's :all
+   (jvm/instrument-jvm-metrics registry (or jvm-metrics :all))
+   ;; start reporting
    (rep/start-reporting registry cfg)))
