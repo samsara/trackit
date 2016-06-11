@@ -10,8 +10,11 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit "0.2.3"]
+[samsara/trackit "0.3.0"]
 ```
+
+Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit.svg)](https://clojars.org/samsara/trackit)
+
 
 Load the namespace in the REPL
 
