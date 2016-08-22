@@ -417,6 +417,74 @@ See here the details.
     :prefix                      "trackit"})
 ```
 
+#### Grafana / InfluxDB
+
+To report to Grafana and InfluxDB use Riemann as collector.
+
+```clojure
+(import 'java.util.concurrent.TimeUnit)
+
+(start-reporting!
+   {:type                        :riemann
+    ;; how often the stats will be reported to the server
+    :reporting-frequency-seconds 10
+    ;; riemann host and port
+    :host                        "localhost"
+    :port                        5555
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; prefix to add to all metrics
+    :prefix                      "trackit"})
+```
+
+In your Grafana / InfluxDB server start a Riemann server with
+the following configuration to forward your metrics to InfluxDB
+
+``` clojure
+
+(logging/init  {:file "/var/log/riemann.log"})
+
+; Listen on the local interface over TCP (5555), UDP (5555), and websockets
+; (5556)
+(let  [host "0.0.0.0"]
+  (tcp-server  {:host host})
+  (udp-server  {:host host})
+  (ws-server  {:host host}))
+
+; Expire old events from the index every 5 seconds.
+(periodically-expire 5)
+
+(let  [index  (index)
+       influx (influxdb {:host "127.0.0.1" :port 8086 :db "dbname"
+                         :username "admin" :password "admin"
+                         :series #(:service %)
+                         :version :0.9
+                         })]
+
+  ; Inbound events will be passed to these streams:
+  (streams
+    ;We are not interested in events from riemann's servers
+    ;i.e the tcp-server udp-server and ws-server above
+    (where (not  (service #"^riemann .+"))
+
+      (default :ttl 60
+        ; Index
+        index
+
+        ;for now, log em
+        #(info %)
+
+        ;send to influxdb
+        influx
+
+        ;Log expired events.
+        (expired
+          (fn [event] (info "EXPIRED" event)))))))
+
+```
+
 ## License
 
 Copyright © 2015-2016 Samsara's authors.
