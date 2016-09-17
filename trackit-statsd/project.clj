@@ -8,7 +8,8 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
-  :dependencies [;; https://github.com/organicveggie/metrics-statsd
+  :dependencies [[samsara/trackit-core #=(slurp "../trackit.version")]
+                 ;; https://github.com/organicveggie/metrics-statsd
                  [com.bealetech/metrics-statsd "3.0.0a"] ;; version not yet released
                  ]
 

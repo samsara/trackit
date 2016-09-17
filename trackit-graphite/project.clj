@@ -8,4 +8,5 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
-  :dependencies [[metrics-clojure-graphite "2.6.1"]])
+  :dependencies [[samsara/trackit-core #=(slurp "../trackit.version")]
+                 [metrics-clojure-graphite "2.6.1"]])

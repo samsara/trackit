@@ -8,5 +8,6 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
-  :dependencies [[com.aphyr/riemann-java-client "0.4.1"]
+  :dependencies [[samsara/trackit-core #=(slurp "../trackit.version")]
+                 [com.aphyr/riemann-java-client "0.4.1"]
                  [com.aphyr/metrics3-riemann-reporter "0.4.1"]])
