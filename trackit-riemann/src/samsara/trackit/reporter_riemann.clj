@@ -1,12 +1,11 @@
 (ns samsara.trackit.reporter-riemann
   (:import  [java.util.concurrent TimeUnit]
             [com.codahale.metrics MetricFilter])
-  (:require [samsara.trackit.reporter])
   (:import  [com.codahale.metrics.riemann RiemannReporter Riemann]
             [com.aphyr.riemann.client RiemannClient TcpTransport]))
 
 
-(defmethod samsara.trackit.reporter/start-reporting :riemann
+(defn start-reporting
   [registry
    {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
     :or  {reporting-frequency-seconds 10, host "localhost", port 5555, prefix "trackit"

@@ -1,11 +1,10 @@
 (ns samsara.trackit.reporter-graphite
   (:import  [java.util.concurrent TimeUnit]
             [com.codahale.metrics MetricFilter])
-  (:require [samsara.trackit.reporter]
-            [metrics.reporters.graphite :as graphite]))
+  (:require [metrics.reporters.graphite :as graphite]))
 
 
-(defmethod samsara.trackit.reporter/start-reporting :graphite
+(defn start-reporting
   [registry
    {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
     :or  {reporting-frequency-seconds 10, host "localhost", port 2003, prefix "trackit"

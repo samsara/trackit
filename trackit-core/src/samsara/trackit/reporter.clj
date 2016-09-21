@@ -26,6 +26,15 @@
      fn-symbol)))
 
 
+(defn- reporting-error [type cause]
+  (throw
+   (ex-info
+    (str "Unable to load appropriate reporter."
+         " Please ensure you have the followin dependency "
+         "[samsara/trackit-" (name type) " \"x.y.z\"]"
+         " in your project.clj")
+    {:type type} cause)))
+
 
 (defmethod start-reporting :default [registry cfg]
   (println "TRACKit!: no reporting method selected."))
@@ -57,8 +66,11 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 2003, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (let [reporter (load-function-from-name "samsara.trackit.reporter-graphite/start-reporting")]
-    (reporter registry cfg)))
+  (try
+    (let [reporter (load-function-from-name "samsara.trackit.reporter-graphite/start-reporting")]
+      (reporter registry cfg))
+    (catch Exception x
+      (reporting-error (:type cfg) x))))
 
 
 

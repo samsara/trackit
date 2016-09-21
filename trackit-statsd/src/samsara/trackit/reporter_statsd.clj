@@ -1,11 +1,10 @@
 (ns samsara.trackit.reporter-statsd
   (:import  [java.util.concurrent TimeUnit]
             [com.codahale.metrics MetricFilter])
-  (:require [samsara.trackit.reporter])
   (:import  [com.bealetech.metrics.reporting StatsdReporter Statsd]))
 
 
-(defmethod samsara.trackit.reporter/start-reporting :statsd
+(defn start-reporting
   [registry
    {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
     :or  {reporting-frequency-seconds 10, host "localhost", port 8125, prefix "trackit"
