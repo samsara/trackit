@@ -1,7 +1,8 @@
 (ns samsara.trackit.reporter
   (:import  [java.util.concurrent TimeUnit]
             [com.codahale.metrics MetricFilter])
-  (:require [metrics.reporters.console :as console]))
+  (:require [metrics.reporters.console :as console]
+            [clojure.tools.logging :as log]))
 
 
 (defmulti start-reporting (fn [registry cfg] (:type cfg)))
@@ -36,8 +37,18 @@
     {:type type} cause)))
 
 
+(defn- load-dynamic-reporter
+  [reporter-name registry cfg]
+  (try
+    (let [reporter (load-function-from-name reporter-name)]
+      (reporter registry cfg))
+    (catch Exception x
+      (reporting-error (:type cfg) x))))
+
+
 (defmethod start-reporting :default [registry cfg]
-  (println "TRACKit!: no reporting method selected."))
+  (log/warn "TRACKit!: Invalid or no reporting method selected."))
+
 
 
 (defmethod start-reporting :custom
@@ -66,11 +77,7 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 2003, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (try
-    (let [reporter (load-function-from-name "samsara.trackit.reporter-graphite/start-reporting")]
-      (reporter registry cfg))
-    (catch Exception x
-      (reporting-error (:type cfg) x))))
+  (load-dynamic-reporter "samsara.trackit.reporter-graphite/start-reporting"))
 
 
 
@@ -80,8 +87,7 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 8125, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (let [reporter (load-function-from-name "samsara.trackit.reporter-statsd/start-reporting")]
-    (reporter registry cfg)))
+  (load-dynamic-reporter "samsara.trackit.reporter-statsd/start-reporting"))
 
 
 
@@ -91,8 +97,7 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 5555, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (let [reporter (load-function-from-name "samsara.trackit.reporter-riemann/start-reporting")]
-    (reporter registry cfg)))
+  (load-dynamic-reporter "samsara.trackit.reporter-riemann/start-reporting"))
 
 
 
@@ -102,5 +107,15 @@
     :or  {reporting-frequency-seconds 60, host "localhost", port 8649, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (let [reporter (load-function-from-name "samsara.trackit.reporter-ganglia/start-reporting")]
-    (reporter registry cfg)))
+  (load-dynamic-reporter "samsara.trackit.reporter-ganglia/start-reporting"))
+
+
+
+(defmethod start-reporting :influxdb
+  [registry
+   {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit
+           tags fields dbname auth connect-timeout read-timeout]
+    :or  {reporting-frequency-seconds 10, host "localhost", port 8086, prefix "trackit"
+          rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
+
+  (load-dynamic-reporter "samsara.trackit.reporter-influxdb/start-reporting"))

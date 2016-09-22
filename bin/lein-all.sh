@@ -20,3 +20,4 @@ leinit trackit-ganglia $*
 leinit trackit-graphite $*
 leinit trackit-riemann $*
 leinit trackit-statsd $*
+leinit trackit-influxdb $*
