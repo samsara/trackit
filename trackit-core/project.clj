@@ -9,7 +9,7 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[org.clojure/clojure "1.6.0"]
-                 [metrics-clojure "2.6.1"]
-                 [metrics-clojure-jvm "2.6.1"]]
+                 [metrics-clojure "2.7.0"]
+                 [metrics-clojure-jvm "2.7.0"]]
 
   :plugins [[lein-marginalia "0.8.0"]])

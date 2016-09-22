@@ -9,5 +9,4 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[samsara/trackit-core #=(slurp "../trackit.version")]
-                 [com.aphyr/riemann-java-client "0.4.1"]
-                 [com.aphyr/metrics3-riemann-reporter "0.4.1"]])
+                 [metrics-clojure-riemann "2.7.0"]])

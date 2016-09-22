@@ -1,27 +1,15 @@
 (ns samsara.trackit.reporter-riemann
   (:import  [java.util.concurrent TimeUnit]
             [com.codahale.metrics MetricFilter])
-  (:import  [com.codahale.metrics.riemann RiemannReporter Riemann]
-            [com.aphyr.riemann.client RiemannClient TcpTransport]))
+  (:require [metrics.reporters.riemann :as riemann]))
 
 
 (defn start-reporting
   [registry
-   {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
+   {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit separator tags]
     :or  {reporting-frequency-seconds 10, host "localhost", port 5555, prefix "trackit"
-          rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
-
-  (let [;; tell Riemann client to do not cache the dns name
-        rc (Riemann.
-            (RiemannClient.
-             (doto
-                 (TcpTransport. host (int port))
-               (-> .-cacheDns (.set false)))))]
-    (-> (RiemannReporter/forRegistry registry)
-        (.prefixedWith prefix)
-        (.convertDurationsTo duration-unit)
-        (.convertRatesTo rate-unit)
-        (.useSeparator ".")
-        (.filter MetricFilter/ALL)
-        (.build rc)
-        (.start reporting-frequency-seconds TimeUnit/SECONDS))))
+          rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS
+          separator "." tags {}} :as cfg}]
+  (riemann/start
+   (riemann/reporter (riemann/make-riemann host port) registry (assoc cfg :host-name host))
+   reporting-frequency-seconds))

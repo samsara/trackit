@@ -1,7 +1,6 @@
 (ns samsara.trackit.reporter-ganglia
   (:import  [java.util.concurrent TimeUnit]
             [com.codahale.metrics MetricFilter])
-  (:require [metrics.reporters.ganglia :as ganglia])
   (:import  [com.codahale.metrics.ganglia GangliaReporter]
             [info.ganglia.gmetric4j.gmetric GMetric GMetric$UDPAddressingMode]))
 
@@ -17,5 +16,5 @@
       (.convertDurationsTo duration-unit)
       (.convertRatesTo rate-unit)
       (.filter MetricFilter/ALL)
-      (.build (GMetric. host (int port) GMetric$UDPAddressingMode/MULTICAST 1))
+      (.build (GMetric. host (int port) GMetric$UDPAddressingMode/UNICAST 300 true))
       (.start reporting-frequency-seconds TimeUnit/SECONDS)))
