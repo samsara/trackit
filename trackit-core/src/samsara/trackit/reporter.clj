@@ -77,7 +77,9 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 2003, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (load-dynamic-reporter "samsara.trackit.reporter-graphite/start-reporting"))
+  (load-dynamic-reporter "samsara.trackit.reporter-graphite/start-reporting"
+                         registry
+                         cfg))
 
 
 
@@ -87,7 +89,9 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 8125, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (load-dynamic-reporter "samsara.trackit.reporter-statsd/start-reporting"))
+  (load-dynamic-reporter "samsara.trackit.reporter-statsd/start-reporting"
+                         registry
+                         cfg))
 
 
 
@@ -97,7 +101,9 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 5555, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (load-dynamic-reporter "samsara.trackit.reporter-riemann/start-reporting"))
+  (load-dynamic-reporter "samsara.trackit.reporter-riemann/start-reporting"
+                         registry
+                         cfg))
 
 
 
@@ -107,7 +113,9 @@
     :or  {reporting-frequency-seconds 60, host "localhost", port 8649, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (load-dynamic-reporter "samsara.trackit.reporter-ganglia/start-reporting"))
+  (load-dynamic-reporter "samsara.trackit.reporter-ganglia/start-reporting"
+                         registry
+                         cfg))
 
 
 
@@ -118,4 +126,6 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 8086, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (load-dynamic-reporter "samsara.trackit.reporter-influxdb/start-reporting"))
+  (load-dynamic-reporter "samsara.trackit.reporter-influxdb/start-reporting"
+                         registry
+                         cfg))

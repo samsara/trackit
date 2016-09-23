@@ -10,7 +10,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit "0.3.0"]
+[samsara/trackit-all "0.5.0"]
 ```
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit.svg)](https://clojars.org/samsara/trackit)
@@ -339,6 +339,15 @@ See here the details.
 
 #### Graphite
 
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-graphite "0.5.0"]
+```
+
+And then start your reporting with:
+
 ```clojure
 (import 'java.util.concurrent.TimeUnit)
 
@@ -358,6 +367,15 @@ See here the details.
 ```
 
 #### Statsd
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-statsd "0.5.0"]
+```
+
+And then start your reporting with:
 
 ```clojure
 (import 'java.util.concurrent.TimeUnit)
@@ -379,6 +397,15 @@ See here the details.
 
 #### Riemann
 
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-riemann "0.5.0"]
+```
+
+And then start your reporting with:
+
 ```clojure
 (import 'java.util.concurrent.TimeUnit)
 
@@ -399,6 +426,16 @@ See here the details.
 
 #### Ganglia
 
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-ganglia "0.5.0"]
+```
+
+And then start your reporting with:
+
+
 ```clojure
 (import 'java.util.concurrent.TimeUnit)
 
@@ -417,9 +454,55 @@ See here the details.
     :prefix                      "trackit"})
 ```
 
-#### Grafana / InfluxDB
+#### InfluxDB
+
+To report to InfluxDB use the `:influxdb` reporter.
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-influxdb "0.5.0"]
+```
+
+And then start your reporting with:
+
+```clojure
+(import 'java.util.concurrent.TimeUnit)
+
+(start-reporting!
+   {:type                        :influxdb
+    ;; how often the stats will be reported to the server
+    :reporting-frequency-seconds 10
+    ;; riemann host and port
+    :host                        "localhost"
+    :port                        8086
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; prefix to add to all metrics
+    :prefix                      "trackit"
+    ;; influx specific params
+    :db-name "metrics"         ;; must already exist
+    :auth "username:password"  ;; if required
+    ;; additional (optional) tags
+    :tags {"host" "node1", "version" "1.2.3"}
+    })
+```
+
+#### Grafana / InfluxDB via Riemann
 
 To report to Grafana and InfluxDB use Riemann as collector.
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-riemann "0.5.0"]
+```
+
+And then start your reporting with:
 
 ```clojure
 (import 'java.util.concurrent.TimeUnit)
@@ -484,6 +567,21 @@ the following configuration to forward your metrics to InfluxDB
           (fn [event] (info "EXPIRED" event)))))))
 
 ```
+
+### Selectively import reporters.
+
+Reporters and their dependencies are distributed into separate JAR files.
+Here a breakdown of the different packages.
+
+  * `[samsara/trackit-core     "x.y.z"]` - core api, always required
+  * `[samsara/trackit-ganglia  "x.y.z"]` - required only when reporting to Ganglia
+  * `[samsara/trackit-graphite "x.y.z"]` - required only when reporting to Graphite
+  * `[samsara/trackit-influxdb "x.y.z"]` - required only when reporting to InfluxDB
+  * `[samsara/trackit-riemann  "x.y.z"]` - required only when reporting to Riemann
+  * `[samsara/trackit-statsd   "x.y.z"]` - required only when reporting to Statsd
+  * `[samsara/trackit-all      "x.y.z"]` - use this one if you want bind them all in single dependency.
+
+
 
 ## License
 

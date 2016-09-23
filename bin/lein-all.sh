@@ -18,6 +18,7 @@ function leinit(){
 leinit trackit-core $*
 leinit trackit-ganglia $*
 leinit trackit-graphite $*
+leinit trackit-influxdb $*
 leinit trackit-riemann $*
 leinit trackit-statsd $*
-leinit trackit-influxdb $*
+leinit trackit-all $*
