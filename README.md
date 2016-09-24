@@ -13,7 +13,7 @@ To use TRACKit! you need to add the following dependency to your
 [samsara/trackit-all "0.5.0"]
 ```
 
-Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit.svg)](https://clojars.org/samsara/trackit)
+Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
 
 
 Load the namespace in the REPL
