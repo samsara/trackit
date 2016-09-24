@@ -1,0 +1,4 @@
+## Customize the test machine
+test:
+  override:
+    - ./bin/lein-all.sh do clean, check, jar
