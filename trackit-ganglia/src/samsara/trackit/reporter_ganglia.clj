@@ -11,10 +11,11 @@
     :or  {reporting-frequency-seconds 60, host "localhost", port 8649, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (-> (GangliaReporter/forRegistry registry)
-      (.prefixedWith prefix)
-      (.convertDurationsTo duration-unit)
-      (.convertRatesTo rate-unit)
-      (.filter MetricFilter/ALL)
-      (.build (GMetric. host (int port) GMetric$UDPAddressingMode/UNICAST 300 true))
-      (.start reporting-frequency-seconds TimeUnit/SECONDS)))
+  (let [reporter (-> (GangliaReporter/forRegistry registry)
+                     (.prefixedWith prefix)
+                     (.convertDurationsTo duration-unit)
+                     (.convertRatesTo rate-unit)
+                     (.filter MetricFilter/ALL)
+                     (.build (GMetric. host (int port) GMetric$UDPAddressingMode/UNICAST 300 true)))]
+    (.start reporter reporting-frequency-seconds TimeUnit/SECONDS)
+    (fn [] (.stop reporter))))

@@ -10,10 +10,11 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 8125, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
 
-  (-> (StatsdReporter/forRegistry registry)
-      (.prefixedWith prefix)
-      (.convertDurationsTo duration-unit)
-      (.convertRatesTo rate-unit)
-      (.filter MetricFilter/ALL)
-      (.build (Statsd. host port))
-      (.start reporting-frequency-seconds TimeUnit/SECONDS)))
+  (let [reporter (-> (StatsdReporter/forRegistry registry)
+                     (.prefixedWith prefix)
+                     (.convertDurationsTo duration-unit)
+                     (.convertRatesTo rate-unit)
+                     (.filter MetricFilter/ALL)
+                     (.build (Statsd. host port)))]
+    (.start reporter reporting-frequency-seconds TimeUnit/SECONDS)
+    (fn [] (.stop reporter))))

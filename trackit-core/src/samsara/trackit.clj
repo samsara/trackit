@@ -371,10 +371,12 @@
         (sort-by :name))))
 
 
+
 (defn get-metric
   ([name] (get-metric *registry* name))
   ([^MetricRegistry registry name]
    (metric-value name (get (.getMetrics registry) name))))
+
 
 
 (defn show-stats
@@ -391,6 +393,7 @@
    (if (= :full format)
      (print-table [:metric :type :display] (all-metrics))
      (print-table [:metric :type :short]   (all-metrics)))))
+
 
 
 (defn start-reporting!

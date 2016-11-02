@@ -10,7 +10,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit-all "0.5.0"]
+[samsara/trackit-all "0.5.1"]
 ```
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
@@ -312,13 +312,20 @@ TRACKit! supports several reporting methods.
 Reporting is activated with:
 
 ```clojure
-(start-reporting! cfg)
+(def r (start-reporting! cfg))
 ```
 
 The configuration will contain a element `:type` which will define
 which backend system will be used to report the metrics.
 Each different backend has a different set of configuration options.
 See here the details.
+
+To stop the reporter:
+
+```clojure
+;; stop the reporter
+(r)
+```
 
 #### Console
 

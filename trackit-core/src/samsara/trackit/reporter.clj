@@ -5,7 +5,11 @@
             [clojure.tools.logging :as log]))
 
 
-(defmulti start-reporting (fn [registry cfg] (:type cfg)))
+(defmulti start-reporting
+  "Starts the reporting with the given configuration for the `registry`.
+   It returns a function which when called it stops the reporter."
+  (fn [registry cfg] (:type cfg)))
+
 
 
 (defn- load-function-from-name
@@ -27,6 +31,7 @@
      fn-symbol)))
 
 
+
 (defn- reporting-error [type cause]
   (throw
    (ex-info
@@ -37,6 +42,7 @@
     {:type type} cause)))
 
 
+
 (defn- load-dynamic-reporter
   [reporter-name registry cfg]
   (try
@@ -44,6 +50,7 @@
       (reporter registry cfg))
     (catch Exception x
       (reporting-error (:type cfg) x))))
+
 
 
 (defmethod start-reporting :default [registry cfg]
@@ -65,9 +72,9 @@
    {:keys [reporting-frequency-seconds stream rate-unit duration-unit]
     :or  {reporting-frequency-seconds 300, stream (System/err)
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
-  (console/start
-   (console/reporter registry cfg)
-   reporting-frequency-seconds))
+  (let [reporter (console/reporter registry cfg)]
+    (console/start reporter reporting-frequency-seconds)
+    (fn [] (console/stop reporter))))
 
 
 

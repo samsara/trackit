@@ -9,6 +9,7 @@
    {:keys [reporting-frequency-seconds host port prefix rate-unit duration-unit]
     :or  {reporting-frequency-seconds 10, host "localhost", port 2003, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
-  (graphite/start
-   (graphite/reporter registry cfg)
-   reporting-frequency-seconds))
+
+  (let [reporter (graphite/reporter registry cfg)]
+    (graphite/start reporter reporting-frequency-seconds)
+    (fn [] (graphite/stop reporter))))

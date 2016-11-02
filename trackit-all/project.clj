@@ -8,7 +8,8 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
-  :dependencies [[samsara/trackit-core     #=(slurp "../trackit.version")]
+  :dependencies [[org.clojure/clojure "1.7.0"]
+                 [samsara/trackit-core     #=(slurp "../trackit.version")]
                  [samsara/trackit-ganglia  #=(slurp "../trackit.version")]
                  [samsara/trackit-graphite #=(slurp "../trackit.version")]
                  [samsara/trackit-influxdb #=(slurp "../trackit.version")]

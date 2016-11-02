@@ -10,6 +10,6 @@
     :or  {reporting-frequency-seconds 10, host "localhost", port 5555, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS
           separator "." tags {}} :as cfg}]
-  (riemann/start
-   (riemann/reporter (riemann/make-riemann host port) registry (assoc cfg :host-name host))
-   reporting-frequency-seconds))
+  (let [reporter (riemann/reporter (riemann/make-riemann host port) registry (assoc cfg :host-name host))]
+    (riemann/start reporter reporting-frequency-seconds)
+    (fn [] (riemann/stop reporter))))

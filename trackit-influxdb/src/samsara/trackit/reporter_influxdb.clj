@@ -21,16 +21,16 @@
              tags fields dbname auth connect-timeout read-timeout]
       :or  {reporting-frequency-seconds 10, host "localhost", port 8086, prefix "trackit"
             rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
-    (influx/start
-     (influx/reporter registry cfg)
-     reporting-frequency-seconds)))
+    (let [reporter (influx/reporter registry cfg)]
+      (influx/start reporter reporting-frequency-seconds)
+      (fn [] (influx/stop reporter)))))
 
 
 ;;
 ;; Tanken from https://github.com/sjl/metrics-clojure/tree/master/metrics-clojure-influxdb
 ;;
 
-(defn ^InfluxDbReporter reporter
+(defn ^InfluxDbReporter influx-reporter
   ([^MetricRegistry reg {:keys [host hostname port prefix tags fields auth connect-timeout read-timeout
                                 group-guages duration-unit measurement-mappings db-name excludes] :as opts
                          :or {port 8086
@@ -79,6 +79,6 @@
            tags fields dbname auth connect-timeout read-timeout]
     :or  {reporting-frequency-seconds 10, host "localhost", port 8086, prefix "trackit"
           rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as cfg}]
-  (start
-   (reporter registry cfg)
-   reporting-frequency-seconds))
+  (let [reporter (influx-reporter registry cfg)]
+    (start reporter reporting-frequency-seconds)
+    (fn [] (stop reporter))))
