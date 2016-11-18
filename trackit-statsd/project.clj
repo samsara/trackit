@@ -1,4 +1,7 @@
-(defproject samsara/trackit-statsd (-> "../trackit.version" slurp .trim)
+(defn ver []
+  (-> "../trackit.version" slurp .trim))
+
+(defproject samsara/trackit-statsd (ver)
 
   :description
   "TRACKit! A Clojure developer friendly wrapper for Yammer's Metrics library."
@@ -8,7 +11,7 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
-  :dependencies [[samsara/trackit-core #=(slurp "../trackit.version")]
+  :dependencies [[samsara/trackit-core #=(ver)]
                  ;; https://github.com/organicveggie/metrics-statsd
                  [com.bealetech/metrics-statsd "3.0.0a"] ;; version not yet released
                  ]

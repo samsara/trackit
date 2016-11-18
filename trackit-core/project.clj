@@ -1,4 +1,7 @@
-(defproject samsara/trackit-core (-> "../trackit.version" slurp .trim)
+(defn ver []
+  (-> "../trackit.version" slurp .trim))
+
+(defproject samsara/trackit-core (ver)
 
   :description
   "TRACKit! A Clojure developer friendly wrapper for Yammer's Metrics library."
