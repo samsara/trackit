@@ -4,6 +4,14 @@ A Clojure developer friendly wrapper for Yammer's Metrics library.
 The objective of this library is to try to make as simple as possible
 to track metrics inside your app.
 
+## How to build
+
+To build all the packages at once run:
+
+``` bash
+./bin/lein-all.sh do clean, check, install
+```
+
 ## Usage
 
 To use TRACKit! you need to add the following dependency to your
@@ -350,7 +358,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-graphite "0.5.0"]
+[samsara/trackit-graphite "0.5.2"]
 ```
 
 And then start your reporting with:
@@ -379,7 +387,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-statsd "0.5.0"]
+[samsara/trackit-statsd "0.5.2"]
 ```
 
 And then start your reporting with:
@@ -408,7 +416,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.5.0"]
+[samsara/trackit-riemann "0.5.2"]
 ```
 
 And then start your reporting with:
@@ -439,7 +447,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-ganglia "0.5.0"]
+[samsara/trackit-ganglia "0.5.2"]
 ```
 
 And then start your reporting with:
@@ -471,7 +479,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-influxdb "0.5.0"]
+[samsara/trackit-influxdb "0.5.2"]
 ```
 
 And then start your reporting with:
@@ -508,7 +516,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.5.0"]
+[samsara/trackit-riemann "0.5.2"]
 ```
 
 And then start your reporting with:
