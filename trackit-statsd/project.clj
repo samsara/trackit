@@ -12,7 +12,9 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[samsara/trackit-core #=(ver)]
-                 ;; https://github.com/organicveggie/metrics-statsd
-                 [com.bealetech/metrics-statsd "2.3.0"]]
+                 ;; https://github.com/readytalk/metrics-statsd
+                 [com.readytalk/metrics3-statsd "4.1.2"]]
+
+  :repositories [["bintray" "http://dl.bintray.com/readytalk/maven"]]
 
   :plugins [[lein-marginalia "0.8.0"]])

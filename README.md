@@ -428,7 +428,9 @@ And then start your reporting with:
     ;; unit to use to display durations
     :duration-unit               TimeUnit/MILLISECONDS
     ;; prefix to add to all metrics
-    :prefix                      "trackit"})
+    :prefix                      "trackit"
+    ;; local hostname
+    :host-name                   "node1"})
 ```
 
 #### Ganglia
