@@ -13,7 +13,6 @@
 
   :dependencies [[samsara/trackit-core #=(ver)]
                  ;; https://github.com/organicveggie/metrics-statsd
-                 [com.bealetech/metrics-statsd "3.0.0a"] ;; version not yet released
-                 ]
+                 [com.bealetech/metrics-statsd "2.3.0"]]
 
   :plugins [[lein-marginalia "0.8.0"]])
