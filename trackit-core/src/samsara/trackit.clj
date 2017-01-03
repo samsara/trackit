@@ -370,13 +370,17 @@
         (map (fn [[k v]] (as-metric k v)))
         (sort-by :name))))
 
-
-
 (defn get-metric
   ([name] (get-metric *registry* name))
   ([^MetricRegistry registry name]
-   (metric-value name (get (.getMetrics registry) name))))
+   (let [m-name (-> name namer m/metric-name)]
+     (metric-value m-name (get (.getMetrics registry) m-name)))))
 
+(defn remove-metric
+  ([name] (remove-metric *registry* name))
+  ([^MetricRegistry registry name]
+   (let [n-name (namer name)]
+     (m/remove-metric registry n-name))))
 
 
 (defn show-stats
