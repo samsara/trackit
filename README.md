@@ -18,7 +18,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit-all "0.5.2"]
+[samsara/trackit-all "0.5.3"]
 ```
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
@@ -358,7 +358,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-graphite "0.5.2"]
+[samsara/trackit-graphite "0.5.3"]
 ```
 
 And then start your reporting with:
@@ -387,7 +387,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-statsd "0.5.2"]
+[samsara/trackit-statsd "0.5.3"]
 ```
 
 And then start your reporting with:
@@ -416,7 +416,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.5.2"]
+[samsara/trackit-riemann "0.5.3"]
 ```
 
 And then start your reporting with:
@@ -447,7 +447,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-ganglia "0.5.2"]
+[samsara/trackit-ganglia "0.5.3"]
 ```
 
 And then start your reporting with:
@@ -479,7 +479,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-influxdb "0.5.2"]
+[samsara/trackit-influxdb "0.5.3"]
 ```
 
 And then start your reporting with:
@@ -516,7 +516,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.5.2"]
+[samsara/trackit-riemann "0.5.3"]
 ```
 
 And then start your reporting with:
@@ -598,6 +598,7 @@ Here a breakdown of the different packages.
   * `[samsara/trackit-statsd   "x.y.z"]` - required only when reporting to Statsd
   * `[samsara/trackit-all      "x.y.z"]` - use this one if you want bind them all in single dependency.
 
+Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
 
 
 ## License
