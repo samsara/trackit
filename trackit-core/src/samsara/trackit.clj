@@ -377,6 +377,11 @@
   ([^MetricRegistry registry name]
    (metric-value name (get (.getMetrics registry) name))))
 
+(defn remove-metric
+  ([name] (remove-metric *registry* name))
+  ([^MetricRegistry registry name]
+   (let [n-name (namer name)]
+     (m/remove-metric registry n-name))))
 
 
 (defn show-stats
