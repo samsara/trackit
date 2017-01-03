@@ -370,17 +370,25 @@
         (map (fn [[k v]] (as-metric k v)))
         (sort-by :name))))
 
+
+
 (defn get-metric
+  "Returns current value of the given metric"
   ([name] (get-metric *registry* name))
   ([^MetricRegistry registry name]
    (let [m-name (-> name namer m/metric-name)]
      (metric-value m-name (get (.getMetrics registry) m-name)))))
 
+
+
 (defn remove-metric
+  "Removes the given metric from the registry causing.
+   After this call the given metric won't be reported any longer."
   ([name] (remove-metric *registry* name))
   ([^MetricRegistry registry name]
    (let [n-name (namer name)]
      (m/remove-metric registry n-name))))
+
 
 
 (defn show-stats
