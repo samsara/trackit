@@ -136,3 +136,15 @@
   (load-dynamic-reporter "samsara.trackit.reporter-influxdb/start-reporting"
                          registry
                          cfg))
+
+
+(defmethod start-reporting :newrelic
+  [registry
+   {:keys [reporter-name reporting-frequency-seconds prefix rate-unit duration-unit]
+    :or  {reporting-frequency-seconds 30, reporter-name "reporter"
+          prefix "trackit/", rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS
+          } :as cfg}]
+
+  (load-dynamic-reporter "samsara.trackit.reporter-newrelic/start-reporting"
+                         registry
+                         cfg))

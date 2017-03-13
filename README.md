@@ -585,6 +585,38 @@ the following configuration to forward your metrics to InfluxDB
 
 ```
 
+#### NewRelic
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-newrelic "0.6.0"]
+```
+
+And then start your reporting with:
+
+
+```clojure
+(import 'java.util.concurrent.TimeUnit)
+
+(start-reporting!
+   {:type                        :newrelic
+    ;; how often the stats will be reported to the server
+    :reporting-frequency-seconds 30
+    ;; set the reported name
+    :reporter-name               "trackit-reporter"
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; prefix to add to all metrics (slash separated)
+    :prefix                      "trackit/"})
+```
+
+**NOTE:** that to use this reporter you need to download and run the NewRelic java agent
+as described in the [NewRelic documentaion](https://docs.newrelic.com/docs/agents/java-agent/installation/java-agent-manual-installation).
+
 ### Selectively import reporters.
 
 Reporters and their dependencies are distributed into separate JAR files.
@@ -594,6 +626,7 @@ Here a breakdown of the different packages.
   * `[samsara/trackit-ganglia  "x.y.z"]` - required only when reporting to Ganglia
   * `[samsara/trackit-graphite "x.y.z"]` - required only when reporting to Graphite
   * `[samsara/trackit-influxdb "x.y.z"]` - required only when reporting to InfluxDB
+  * `[samsara/trackit-newrelic "x.y.z"]` - required only when reporting to NewRelic
   * `[samsara/trackit-riemann  "x.y.z"]` - required only when reporting to Riemann
   * `[samsara/trackit-statsd   "x.y.z"]` - required only when reporting to Statsd
   * `[samsara/trackit-all      "x.y.z"]` - use this one if you want bind them all in single dependency.
