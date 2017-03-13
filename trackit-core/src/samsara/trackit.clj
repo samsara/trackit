@@ -66,7 +66,7 @@
   When called without arguments it atomically increments
   the counter by 1. If you call the function with a number
   will increment the counter by that number.
-  Eample:
+  Example:
 
      ;; create the counter
      (def track-order-items (count-tracker \"items.processed\"))
@@ -79,7 +79,7 @@
   [name]
   (let [metric (mc/counter *registry* (namer name))]
     (fn ([]  (mc/inc! metric)   1)
-       ([v] (mc/inc! metric v) v))))
+      ([v] (mc/inc! metric v) v))))
 
 
 

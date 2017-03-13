@@ -59,7 +59,7 @@ Usage example:
 
 When called without arguments it atomically increments the counter by 1. If you call the function with a number will increment the counter by that number.
 
-Eample:
+Example:
 
 ```clojure
  ;; create the counter
