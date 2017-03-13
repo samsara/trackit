@@ -16,6 +16,7 @@
                  [samsara/trackit-ganglia  #=(ver)]
                  [samsara/trackit-graphite #=(ver)]
                  [samsara/trackit-influxdb #=(ver)]
+                 [samsara/trackit-newrelic #=(ver)]
                  [samsara/trackit-riemann  #=(ver)]
                  [samsara/trackit-statsd   #=(ver)]
                  ])
