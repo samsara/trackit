@@ -4,6 +4,16 @@ A Clojure developer friendly wrapper for Yammer's Metrics library.
 The objective of this library is to try to make as simple as possible
 to track metrics inside your app.
 
+It can publish the metrics in any of the following systems:
+
+  - Console
+  - Ganglia
+  - Graphite
+  - Statsd
+  - Infuxdb
+  - Reimann
+  - NewRelic
+
 ## How to build
 
 To build all the packages at once run:
@@ -606,6 +616,11 @@ And then start your reporting with:
     :reporting-frequency-seconds 30
     ;; set the reported name
     :reporter-name               "trackit-reporter"
+    ;; Whether a specific metric attribute should be published to NewRelic or not.
+    ;; It takes a function which takes in input the `name` of the metric and the
+    ;; attribute (keyword) and it returns `true`/`false` whether it should be pulished.
+    ;; by default it publishes everything.
+    :metrics-attribute-filter    (constantly true)
     ;; unit to use to display rates
     :rate-unit                   TimeUnit/SECONDS
     ;; unit to use to display durations
@@ -616,6 +631,65 @@ And then start your reporting with:
 
 **NOTE:** that to use this reporter you need to download and run the NewRelic java agent
 as described in the [NewRelic documentaion](https://docs.newrelic.com/docs/agents/java-agent/installation/java-agent-manual-installation).
+
+[NewRelic custom metrics best practices](https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/custom-metrics#best_practices) recommends
+to keep the number of custom metrics under 2000.  For this purpose you
+can use the `:metrics-attribute-filter` option which takes a function
+with two arguments: the metrics `name` and the attribute type. The
+attribute type is one of the following keywords:
+
+``` clojure
+(def ^:const all-metrics-attributes
+  #{:timer-min
+    :timer-max
+    :timer-mean
+    :timer-std-dev
+    :timer-median
+    :timer75th-percentile
+    :timer95th-percentile
+    :timer98th-percentile
+    :timer99th-percentile
+    :timer999th-percentile
+    :timer-count
+    :timer-mean-rate
+    :timer1-minute-rate
+    :timer5-minute-rate
+    :timer15-minute-rate
+    :histogram-min
+    :histogram-max
+    :histogram-mean
+    :histogram-std-dev
+    :histogram-median
+    :histogram75th-percentile
+    :histogram95th-percentile
+    :histogram98th-percentile
+    :histogram99th-percentile
+    :histogram999th-percentile
+    :meter-count
+    :meter-mean-rate
+    :meter1-minute-rate
+    :meter5-minute-rate
+    :meter15-minute-rate
+    :counter-count
+    :gauge-value})
+```
+
+So if you are interested only in the `999th-percentiles` for timers
+and histograms you can write a function which looks like this:
+
+``` clojure
+(defn my-filter [name type]
+  (#{:timer999th-percentile
+     :histogram999th-percentile
+     :meter-count
+     :meter1-minute-rate
+     :counter-count
+     :gauge-value} type))
+```
+
+This function will return `true` only when the type is one of the listed types.
+Finally you have to pass this function as `:metrics-attribute-filter my-filter`.
+
 
 ### Selectively import reporters.
 

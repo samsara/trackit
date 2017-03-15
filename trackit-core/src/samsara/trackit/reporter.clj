@@ -140,8 +140,10 @@
 
 (defmethod start-reporting :newrelic
   [registry
-   {:keys [reporter-name reporting-frequency-seconds prefix rate-unit duration-unit]
-    :or  {reporting-frequency-seconds 30, reporter-name "reporter"
+   {:keys [reporter-name reporting-frequency-seconds metrics-attribute-filter
+           prefix rate-unit duration-unit]
+    :or  {reporting-frequency-seconds 30, reporter-name "trackit-reporter"
+          metrics-attribute-filter (constantly true)
           prefix "trackit/", rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS
           } :as cfg}]
 
