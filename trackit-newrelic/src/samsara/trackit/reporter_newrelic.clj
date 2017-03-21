@@ -7,7 +7,8 @@
   (:import java.util.concurrent.TimeUnit
            [com.codahale.metrics Metric MetricRegistry]
            [com.palominolabs.metrics.newrelic
-            NewRelicReporter MetricAttributeFilter]))
+            MetricAttributeFilter]
+           [samsara NewRelicReporter]))
 
 
 (def ^:const all-metrics-attributes
@@ -46,39 +47,40 @@
 
 
 (defn- metrics-attribute-filter* [f]
-  (proxy [MetricAttributeFilter] []
-    (recordTimerMin [name, metric] (f name :timer-min))
-    (recordTimerMax [name, metric] (f name :timer-max))
-    (recordTimerMean [name, metric] (f name :timer-mean))
-    (recordTimerStdDev [name, metric] (f name :timer-std-dev))
-    (recordTimerMedian [name, metric] (f name :timer-median))
-    (recordTimer75thPercentile [name, metric] (f name :timer75th-percentile))
-    (recordTimer95thPercentile [name, metric] (f name :timer95th-percentile))
-    (recordTimer98thPercentile [name, metric] (f name :timer98th-percentile))
-    (recordTimer99thPercentile [name, metric] (f name :timer99th-percentile))
-    (recordTimer999thPercentile [name, metric] (f name :timer999th-percentile))
-    (recordTimerCount [name, metric] (f name :timer-count))
-    (recordTimerMeanRate [name, metric] (f name :timer-mean-rate))
-    (recordTimer1MinuteRate [name, metric] (f name :timer1-minute-rate))
-    (recordTimer5MinuteRate [name, metric] (f name :timer5-minute-rate))
-    (recordTimer15MinuteRate [name, metric] (f name :timer15-minute-rate))
-    (recordHistogramMin [name, metric] (f name :histogram-min))
-    (recordHistogramMax [name, metric] (f name :histogram-max))
-    (recordHistogramMean [name, metric] (f name :histogram-mean))
-    (recordHistogramStdDev [name, metric] (f name :histogram-std-dev))
-    (recordHistogramMedian [name, metric] (f name :histogram-median))
-    (recordHistogram75thPercentile [name, metric] (f name :histogram75th-percentile))
-    (recordHistogram95thPercentile [name, metric] (f name :histogram95th-percentile))
-    (recordHistogram98thPercentile [name, metric] (f name :histogram98th-percentile))
-    (recordHistogram99thPercentile [name, metric] (f name :histogram99th-percentile))
-    (recordHistogram999thPercentile [name, metric] (f name :histogram999th-percentile))
-    (recordMeterCount [name, metric] (f name :meter-count))
-    (recordMeterMeanRate [name, metric] (f name :meter-mean-rate))
-    (recordMeter1MinuteRate [name, metric] (f name :meter1-minute-rate))
-    (recordMeter5MinuteRate [name, metric] (f name :meter5-minute-rate))
-    (recordMeter15MinuteRate [name, metric] (f name :meter15-minute-rate))
-    (recordCounterCount [name, metric] (f name :counter-count))
-    (recordGaugeValue [name, metric] (f name :gauge-value))))
+  (let [f (comp boolean f)]
+    (proxy [MetricAttributeFilter] []
+      (recordTimerMin [name, metric] (f name :timer-min))
+      (recordTimerMax [name, metric] (f name :timer-max))
+      (recordTimerMean [name, metric] (f name :timer-mean))
+      (recordTimerStdDev [name, metric] (f name :timer-std-dev))
+      (recordTimerMedian [name, metric] (f name :timer-median))
+      (recordTimer75thPercentile [name, metric] (f name :timer75th-percentile))
+      (recordTimer95thPercentile [name, metric] (f name :timer95th-percentile))
+      (recordTimer98thPercentile [name, metric] (f name :timer98th-percentile))
+      (recordTimer99thPercentile [name, metric] (f name :timer99th-percentile))
+      (recordTimer999thPercentile [name, metric] (f name :timer999th-percentile))
+      (recordTimerCount [name, metric] (f name :timer-count))
+      (recordTimerMeanRate [name, metric] (f name :timer-mean-rate))
+      (recordTimer1MinuteRate [name, metric] (f name :timer1-minute-rate))
+      (recordTimer5MinuteRate [name, metric] (f name :timer5-minute-rate))
+      (recordTimer15MinuteRate [name, metric] (f name :timer15-minute-rate))
+      (recordHistogramMin [name, metric] (f name :histogram-min))
+      (recordHistogramMax [name, metric] (f name :histogram-max))
+      (recordHistogramMean [name, metric] (f name :histogram-mean))
+      (recordHistogramStdDev [name, metric] (f name :histogram-std-dev))
+      (recordHistogramMedian [name, metric] (f name :histogram-median))
+      (recordHistogram75thPercentile [name, metric] (f name :histogram75th-percentile))
+      (recordHistogram95thPercentile [name, metric] (f name :histogram95th-percentile))
+      (recordHistogram98thPercentile [name, metric] (f name :histogram98th-percentile))
+      (recordHistogram99thPercentile [name, metric] (f name :histogram99th-percentile))
+      (recordHistogram999thPercentile [name, metric] (f name :histogram999th-percentile))
+      (recordMeterCount [name, metric] (f name :meter-count))
+      (recordMeterMeanRate [name, metric] (f name :meter-mean-rate))
+      (recordMeter1MinuteRate [name, metric] (f name :meter1-minute-rate))
+      (recordMeter5MinuteRate [name, metric] (f name :meter5-minute-rate))
+      (recordMeter15MinuteRate [name, metric] (f name :meter15-minute-rate))
+      (recordCounterCount [name, metric] (f name :counter-count))
+      (recordGaugeValue [name, metric] (f name :gauge-value)))))
 
 
 (defn ^NewRelicReporter newrelic-reporter

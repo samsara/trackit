@@ -11,6 +11,8 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
+  :java-source-paths ["src/java"]
+
   :dependencies [[samsara/trackit-core #=(ver)]
                  [com.palominolabs.metrics/metrics-new-relic "1.1.1"]
                  ]
