@@ -501,7 +501,7 @@ And then start your reporting with:
    {:type                        :influxdb
     ;; how often the stats will be reported to the server
     :reporting-frequency-seconds 10
-    ;; riemann host and port
+    ;; influxdb host and port
     :host                        "localhost"
     :port                        8086
     ;; unit to use to display rates
