@@ -24,16 +24,4 @@ jobs:
     steps:
       - checkout
 
-      # Download and cache dependencies
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "project.clj" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-
       - run: ./bin/lein-all.sh do clean, check, install
-
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "project.clj" }}
