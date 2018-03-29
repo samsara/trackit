@@ -12,4 +12,4 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[samsara/trackit-core #=(ver)]
-                 [metrics-clojure-graphite "2.7.0"]])
+                 [metrics-clojure-graphite "2.10.0"]])

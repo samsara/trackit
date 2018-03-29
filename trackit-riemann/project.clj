@@ -12,4 +12,4 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[samsara/trackit-core #=(ver)]
-                 [metrics-clojure-riemann "2.7.0"]])
+                 [metrics-clojure-riemann "2.10.0"]])
