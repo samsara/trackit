@@ -70,7 +70,7 @@
 
 
      ;; create the counter
-     (def track-orders (count-tracker \"orders.processed\"))
+     (def track-orders (count-tracker \"myapp.orders.processed\"))
 
      ;; use the counter
      (defn mark-order-as-processed [& args]
@@ -84,7 +84,7 @@
   Example:
 
      ;; create the counter
-     (def track-order-items (count-tracker \"items.processed\"))
+     (def track-order-items (count-tracker \"myapp.items.processed\"))
 
      ;; use the counter
      (defn mark-order-as-processed [{items :items :as order}]
@@ -106,12 +106,12 @@
 
      ;; use the counter
      (defn mark-order-as-processed [& args]
-       (track-count \"orders.processed\")
+       (track-count \"myapp.orders.processed\")
        (comment do something else))
 
      ;; use the counter with a give increment
      (defn process-order [{items :items :as order}]
-       (track-count \"orders.items.count\" (count items))
+       (track-count \"myapp.orders.items.count\" (count items))
        (comment do something else))
 
   "
@@ -132,7 +132,7 @@
 
      ;; use the counter
      (defn mark-order-as-processed [& args]
-       (track-pass-count \"orders.processed\"    ;; count body executions
+       (track-pass-count \"myapp.orders.processed\"    ;; count body executions
          (comment do something else)))
 
   "
@@ -221,7 +221,7 @@
   usage:
 
       ;; initialize tracker
-      (def track-request-rate (rate-tracker \"user.requests\"))
+      (def track-request-rate (rate-tracker \"myapp.user.requests\"))
 
       ;; in your request handler
       (defn request-handler [req]
@@ -250,13 +250,13 @@
 
       ;; in your request handler
       (defn request-handler [req]
-        (track-rate \"user.requests\")
+        (track-rate \"myapp.user.requests\")
         (comment handle the request))
 
 
       ;; track the number of doc indexed
       (defn index-documents [documents]
-        (track-rate \"document.indexed\" (count documents))
+        (track-rate \"myapp.document.indexed\" (count documents))
         (comment handle the request))
 
   "
@@ -276,7 +276,7 @@
 
       ;; in your request handler
       (defn request-handler [req]
-        (track-rate \"user.requests\"
+        (track-rate \"myapp.user.requests\"
           (comment handle the request)))
   "
   [name & body]
@@ -353,7 +353,7 @@
      ;; track searches
      (defn my-search [query]
        (let [results (execute query)]
-         (track-distribution \"search.results\" (count results))
+         (track-distribution \"myapp.search.results\" (count results))
          results))
 
   Typically the thing you want to track is going to be either
@@ -369,7 +369,7 @@
 
      ;; track searches
      (defn my-search [query]
-       (track-distribution \"search.results\"
+       (track-distribution \"myapp.search.results\"
          (execute query)))
 
   It returns the result of the `body` execution.
@@ -409,7 +409,7 @@
   Anytime you what to know about *how long* it takes
   to run a part of your code use this tracker.
 
-     (track-time \"db.search\"
+     (track-time \"myapp.db.search\"
        (let [connection (get-connection db)]
          (db-query connection a-query)))
 

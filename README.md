@@ -58,7 +58,7 @@ Usage example:
 
 ```clojure
  ;; create the counter
- (def track-orders (count-tracker "orders.processed"))
+ (def track-orders (count-tracker "myapp.orders.processed"))
 
  ;; use the counter
  (defn mark-order-as-processed [& args]
@@ -73,7 +73,7 @@ Example:
 
 ```clojure
  ;; create the counter
- (def track-order-items (count-tracker "items.processed"))
+ (def track-order-items (count-tracker "myapp.items.processed"))
 
  ;; use the counter
  (defn mark-order-as-processed [{items :items :as order}]
@@ -86,12 +86,12 @@ A convenience fucntion is also available which counts the number of time the bod
 ```clojure
 ;; use the counter
 (defn mark-order-as-processed [& args]
-  (track-count "orders.processed")
+  (track-count "myapp.orders.processed")
   (comment do something else))
 
 ;; use the counter with a give increment
 (defn process-order [{items :items :as order}]
-  (track-count "orders.items.count" (count items))
+  (track-count "myapp.orders.items.count" (count items))
   (comment do something else))
 
 ```
@@ -102,7 +102,7 @@ is executed then you can use the following macro.
 ```Clojure
 ;; use the counter
 (defn mark-order-as-processed [& args]
-  (track-pass-count "orders.processed"    ;; count body executions
+  (track-pass-count "myapp.orders.processed"    ;; count body executions
     (comment do something else)))
 ```
 
@@ -138,7 +138,7 @@ usage:
 
 ```clojure
 ;; initialize tracker
-(def track-request-rate (rate-tracker "user.requests"))
+(def track-request-rate (rate-tracker "myapp.user.requests"))
 
 ;; in your request handler
 (defn request-handler [req]
@@ -150,7 +150,7 @@ If you are handling a batch of item rather than a single request you
 can pass the a number in the returned function like:
 
 ```clojure
-(def track-documents-rate (rate-tracker "indexer.documents.indexed"))
+(def track-documents-rate (rate-tracker "myapp.indexer.documents.indexed"))
 
 (defn store-documents [ documents-batch ]
   (track-documents-rate (count documents-batch))
@@ -162,7 +162,7 @@ You can inline your tracker in with the `track-rate` function.
 ```clojure
 ;; in your request handler
 (defn request-handler [req]
-  (track-rate "user.requests")
+  (track-rate "myapp.user.requests")
   (comment handle the request))
 ```
 
@@ -171,28 +171,31 @@ Here with an arbitrary size.
 ```clojure
 ;; track the number of doc indexed
 (defn index-documents [documents]
-  (track-rate "document.indexed" (count documents))
+  (track-rate "myapp.document.indexed" (count documents))
   (comment handle the request))
 ```
 
-With the macro you can do the same over the execution of a block of code.
-It tracks the rate of the body execution. It is useful to track things such as: number of request per second, number of db-query per second, number of orders per minute etc.
+With the macro you can do the same over the execution of a block of
+code.  It tracks the rate of the body execution. It is useful to track
+things such as: number of request per second, number of db-query per
+second, number of orders per minute etc.
 
 usage:
 
 ```clojure
   ;; in your request handler
   (defn request-handler [req]
-    (track-pass-rate "user.requests"
+    (track-pass-rate "myapp.user.requests"
       (comment handle the request)))
 ```
 
 ### Tracking a distribution (histograms/percentiles)
 
-If you want to know the average of some quantity then the distribution tracker provides
-a better result.
-`distribution-tracker` returns a function which takes a value as parameter and it tracks its distribution.
-Whenever you are looking for an average, an histogram gives you more information. So rather than looking at:
+If you want to know the average of some quantity then the distribution
+tracker provides a better result.  `distribution-tracker` returns a
+function which takes a value as parameter and it tracks its
+distribution.  Whenever you are looking for an average, an histogram
+gives you more information. So rather than looking at:
 
 *The average search result is 120 items*
 
@@ -204,7 +207,7 @@ usage:
 
 ```clojure
  ;; initialize tracker
- (def track-search-results (distribution-tracker "search.results"))
+ (def track-search-results (distribution-tracker "myapp.search.results"))
 
  ;; track searches
  (defn my-search [query]
@@ -221,7 +224,7 @@ you can track the distribution as:
 ;; track searches
 (defn my-search [query]
   (let [results (execute query)]
-    (track-distribution "search.results" (count results))
+    (track-distribution "myapp.search.results" (count results))
     results))
 ```
 
@@ -239,7 +242,7 @@ but much clearer.
 ```clojure
 ;; track searches
 (defn my-search [query]
-  (track-distribution "search.results"
+  (track-distribution "myapp.search.results"
     (execute query)))
 ```
 
@@ -254,7 +257,7 @@ If you want to track how long a query takes then a macro similar to `time` will 
 This is useful to measure things such as: the time it takes to query the database, or to process a request, or to send a request to another services. Anytime you what to know about how long it takes to run a part of your code use this tracker.
 
 ```clojure
- (track-time "db.search"
+ (track-time "myapp.db.search"
    (let [connection (get-connection db)]
      (db-query connection a-query)))
 ```
