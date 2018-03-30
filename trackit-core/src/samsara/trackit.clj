@@ -11,39 +11,54 @@
   (:require [clojure.pprint :refer [print-table] :as pp])
   (:import  [com.codahale.metrics MetricRegistry]))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;;                      ----==| R E G I S T R Y |==----                       ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (def ^:dynamic *registry* (m/new-registry))
 
-(def ^:dynamic *base-name* ["app" "metrics"])
 
-(defn set-base-metrics-name! [name1 name2]
-  (alter-var-root #'*base-name* (constantly [name1 name2])))
 
-(defn reset-registry! []
+(defn reset-registry!
+  []
   (alter-var-root #'*registry* (constantly (m/new-registry))))
 
-;; TODO: review naming strategy, not really convinced about this
-(defn namer [name]
-  (if-not (string? name)
-    name
-    (let [sections  (clojure.string/split name #"\.")
-          nsections (count sections)]
-      (cond
-       (= nsections 3) sections
-       (> nsections 3) [(first sections) (second sections)
-                        (clojure.string/join "." (nnext sections))]
-       (= nsections 1) (conj *base-name* name)
-       (= nsections 2) (concat [(first *base-name*)] sections)))))
 
 
-;;
-;; # Registry
-;;
-(defn new-registry []
+(def namer
+  (memoize
+   (fn [name]
+     (or (->> name
+             (re-find #"^([^.]+)\.([^.]+)\.(.*)$")
+             next)
+        (throw (ex-info (str "Illegal metric name, should be in the form of: "
+                             "app.module.metric.name with 3 or more segments")
+                        {:name name}))))))
+
+
+
+(defn new-registry
+  []
   (m/new-registry))
 
-;;
-;; # Counting things
-;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;;               ----==| C O U N T I N G   T H I N G S |==----                ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(def ^:private -count-tracker
+  (memoize
+   (fn [registry name]
+     (let [metric (mc/counter registry (namer name))]
+       (fn ([]  (mc/inc! metric)   1)
+         ([v] (mc/inc! metric v) v))))))
+
+
 
 (defn count-tracker
   "It returns a function which traces the number of times it is called
@@ -77,9 +92,7 @@
        (comment do something else))
   "
   [name]
-  (let [metric (mc/counter *registry* (namer name))]
-    (fn ([]  (mc/inc! metric)   1)
-      ([v] (mc/inc! metric v) v))))
+  (-count-tracker *registry* name))
 
 
 
@@ -127,13 +140,17 @@
    `(try
       ~@body
       (finally
-        (mc/inc! (mc/counter *registry* (namer ~name)))))))
+        ((-count-tracker *registry* ~name))))))
 
 
 
-;;
-;; # Tracking current value of something
-;;
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;;        ----==| T R A C K I N G   C U R R E N T   V A L U E |==----         ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 (defn track-value-of
   "It tracks the current value of a function.
@@ -175,9 +192,26 @@
 
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;;                    ----==| T R A C K   R A T E |==----                     ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;
 ;; # Tracking how often something happens (rate and distribution)
 ;;
+
+(def ^:private -rate-tracker
+  (memoize
+   (fn [registry name]
+     (let [metric (mm/meter registry (namer name))]
+       (fn
+         ([]  (mm/mark! metric) 1)
+         ([n] (mm/mark! metric n) n))))))
+
+
 
 (defn rate-tracker
   "It returns a function which tracks how often an event happens.
@@ -203,10 +237,7 @@
 
   "
   [name]
-  (let [metric (mm/meter *registry* (namer name))]
-    (fn
-      ([]  (mm/mark! metric) 1)
-      ([n] (mm/mark! metric n) n))))
+  (-rate-tracker *registry* name))
 
 
 
@@ -252,13 +283,28 @@
   `(try
      ~@body
      (finally
-       (mm/mark! (mm/meter *registry* (namer ~name))))))
+       ((-rate-tracker registry ~name)))))
 
 
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;;            ----==| T R A C K   D I S T R I B U T I O N |==----             ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;
 ;; # Tracking a distribution (histograms/percentiles)
 ;;
+
+(def ^:private -distribution-tracker
+  (memoize
+   (fn [registry name]
+     (let [metric (mh/histogram registry (namer name))]
+       (fn [v] (mh/update! metric v))))))
+
+
 
 (defn distribution-tracker
   "It returns a function which takes a value as parameter
@@ -286,8 +332,7 @@
 
   "
   [name]
-  (let [metric (mh/histogram *registry* (namer name))]
-    (fn [v] (mh/update! metric v))))
+  (-distribution-tracker *registry* name))
 
 
 
@@ -336,9 +381,23 @@
   value)
 
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                                            ;;
+;;          ----==| T R A C K   E X E C U T I O N   T I M E |==----           ;;
+;;                                                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;
 ;; # Tracking how long it takes to do something
 ;;
+
+(def time-tracker
+  (memoize
+   (fn [registry name]
+     (mt/timer registry (namer name)))))
+
+
 
 (defmacro track-time
   "It track the distribution of the time it takes to
@@ -357,7 +416,7 @@
   It returns the result of `body` execution.
   "
   [name & body]
-  `(mt/time! (mt/timer *registry* (namer ~name))
+  `(mt/time! (time-tracker *registry* ~name)
              ~@body))
 
 

@@ -46,7 +46,7 @@
 
   (display-value-of [metric]
     (let [{:keys [mean m1 total]} (current-value-of metric)]
-      (format "avg: %.2f/s, 1m avg: %.2f/s, count: %d"
+      (format "mean: %.2f/s, 1m rate: %.2f/s, count: %d"
               mean m1 total)))
 
   (display-short-value-of [metric]
@@ -69,7 +69,7 @@
 
   (display-value-of [metric]
     (let [{mean :mean p99 0.99 total :total min :min max :max} (current-value-of metric)]
-      (format "avg: %.2f, 99%%ile: %.2f, count: %d, min: %.2f, max: %.2f"
+      (format "mean: %.2f, 99%%ile: %.2f, count: %d, min: %.2f, max: %.2f"
               (double mean) (double p99) total (double min) (double max))))
 
   (display-short-value-of [metric]
@@ -97,8 +97,8 @@
   (display-value-of [metric]
     (let [{:keys [mean total min max mean-rate m1-rate] p99 0.99} (current-value-of metric)
           millis #(double (/ % 1000000))]
-      (format (str "avg: %.2f/ms, 99%%ile: %.2f/ms, count: %d, min: %.2f/ms, max: %.2f/ms, "
-                   "@rate avg: %.2f/s, 1m avg: %.2f/s")
+      (format (str "mean: %.2f/ms, 99%%ile: %.2f/ms, count: %d, min: %.2f/ms, max: %.2f/ms, "
+                   "@mean rate: %.2f/s, 1m rate: %.2f/s")
               (millis mean) (millis p99) total (millis min) (millis max)
               (double mean-rate) (double m1-rate))))
 
