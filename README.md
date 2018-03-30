@@ -429,7 +429,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.6.0"]
+[samsara/trackit-riemann "0.7.0"]
 ```
 
 And then start your reporting with:
