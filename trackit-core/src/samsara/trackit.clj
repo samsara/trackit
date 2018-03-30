@@ -114,6 +114,7 @@
        (comment do something else))
 
   "
+  {:style/indent 1}
   ([name]
    ((count-tracker name)))
   ([name count]
@@ -135,6 +136,7 @@
          (comment do something else)))
 
   "
+  {:style/indent 1}
   ([name & body]
    `(try
       ~@body
@@ -165,6 +167,7 @@
   typically every 10s (reporter configuration) which means
   that every ~10s a call to the `tracker-fn` will be made.
   "
+  {:style/indent 1}
   [name tracker-fn]
   (mg/gauge-fn *registry* (namer name) tracker-fn))
 
@@ -186,6 +189,7 @@
   typically every 10s (reporter configuration) which means
   that every ~10s a call to the `tracker-fn` will be made.
   "
+  {:style/indent 1}
   [name & body]
   `(track-value-of ~name (fn [] ~@body)))
 
@@ -259,6 +263,7 @@
         (comment handle the request))
 
   "
+  {:style/indent 1}
   ([name]
    ((rate-tracker name)))
   ([name count]
@@ -278,6 +283,7 @@
         (track-rate \"myapp.user.requests\"
           (comment handle the request)))
   "
+  {:style/indent 1}
   [name & body]
   `(try
      ~@body
@@ -373,6 +379,7 @@
 
   It returns the result of the `body` execution.
   "
+  {:style/indent 1}
   [name value]
   ((distribution-tracker name)
    (if (number? value) value (count value)))
@@ -414,6 +421,7 @@
 
   It returns the result of `body` execution.
   "
+  {:style/indent 1}
   [name & body]
   `(mt/time! (time-tracker *registry* ~name)
              ~@body))
