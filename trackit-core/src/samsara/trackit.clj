@@ -8,7 +8,6 @@
             [metrics.meters :as mm]
             [metrics.histograms :as mh]
             [metrics.timers :as mt])
-  (:require [clojure.pprint :refer [print-table] :as pp])
   (:import  [com.codahale.metrics MetricRegistry]))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -461,9 +460,10 @@
   "
   ([] (show-stats :short))
   ([format]
-   (if (= :full format)
-     (print-table [:metric :type :display] (all-metrics))
-     (print-table [:metric :type :short]   (all-metrics)))))
+   (let [metrics (sort-by :metric (all-metrics))]
+     (if (= :full format)
+       (print-table [:metric :type :display] metrics)
+       (print-table [:metric :type :short]   metrics)))))
 
 
 
