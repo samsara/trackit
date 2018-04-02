@@ -431,7 +431,7 @@
 (defn all-metrics
   "Returns a list of all metrics with their current value and a formatted value"
   ([] (all-metrics *registry*))
-  ([registry]
+  ([^MetricRegistry registry]
    (->> (into {} (.getMetrics registry))
         (map (fn [[k v]] (as-metric k v)))
         (sort-by :name))))
