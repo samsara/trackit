@@ -13,6 +13,7 @@ It can publish the metrics in any of the following systems:
   - Infuxdb
   - Reimann
   - NewRelic
+  - AWS Cloudwatch
 
 ## How to build
 
@@ -694,6 +695,38 @@ This function will return `true` only when the type is one of the listed types.
 Finally you have to pass this function as `:metrics-attribute-filter my-filter`.
 
 
+#### Cloudwatch
+
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-cloudwatch "0.7.1"]
+```
+
+And then start your reporting with:
+
+
+```clojure
+(import 'java.util.concurrent.TimeUnit)
+(import 'com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder)
+
+(start-reporting!
+   {:type                        :cloudwatch
+    ;; The custom namespace in cloudwatch under which metrics will be published
+    :namespace                   "trackit-namespace"
+    ;; The aws async client used to report push metrics. Most users don't need to
+    ;; provide this, but the option is provided for those who might need more control
+    :async-client                (.build (AmazonCloudWatchAsyncClientBuilder/standard))
+    ;; how often the stats will be reported to Cloudwatch
+    :reporting-frequency-seconds 30
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS})
+```
+
 ### Selectively import reporters.
 
 Reporters and their dependencies are distributed into separate JAR files.
@@ -703,6 +736,7 @@ Here a breakdown of the different packages.
   * `[samsara/trackit-ganglia  "x.y.z"]` - required only when reporting to Ganglia
   * `[samsara/trackit-graphite "x.y.z"]` - required only when reporting to Graphite
   * `[samsara/trackit-influxdb "x.y.z"]` - required only when reporting to InfluxDB
+  * `[samsara/trackit-cloudwatch "x.y.z"]` - required only when reporting to AWS Cloudwatch
   * `[samsara/trackit-newrelic "x.y.z"]` - required only when reporting to NewRelic
   * `[samsara/trackit-riemann  "x.y.z"]` - required only when reporting to Riemann
   * `[samsara/trackit-statsd   "x.y.z"]` - required only when reporting to Statsd
