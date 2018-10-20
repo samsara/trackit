@@ -6,7 +6,7 @@
   {:memory      jvm/register-memory-usage-gauge-set
    :files       jvm/register-file-descriptor-ratio-gauge-set
    :gc          jvm/register-garbage-collector-metric-set
-   :threds      jvm/register-thread-state-gauge-set
+   :threads     jvm/register-thread-state-gauge-set
    :attributes  jvm/register-jvm-attribute-gauge-set})
 
 
