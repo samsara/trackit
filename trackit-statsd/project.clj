@@ -15,4 +15,4 @@
                  ;; https://github.com/readytalk/metrics-statsd
                  [com.readytalk/metrics3-statsd "4.1.2"]]
 
-  :repositories [["bintray" "http://dl.bintray.com/readytalk/maven"]])
+  :repositories [["bintray" "https://dl.bintray.com/readytalk/maven"]])
