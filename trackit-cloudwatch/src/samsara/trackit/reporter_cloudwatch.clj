@@ -8,7 +8,7 @@
   [registry
    {:keys [namespace async-client reporting-frequency-seconds rate-unit duration-unit]
     :or   {async-client                (.build (AmazonCloudWatchAsyncClientBuilder/standard))
-           reporting-frequency-seconds 10
+           reporting-frequency-seconds 300
            rate-unit                   TimeUnit/SECONDS
            duration-unit               TimeUnit/MILLISECONDS}
     :as   cfg}]
