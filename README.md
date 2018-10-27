@@ -697,12 +697,17 @@ Finally you have to pass this function as `:metrics-attribute-filter my-filter`.
 
 #### Cloudwatch
 
+NOTE: AWS costs money, please always consider the following
+* How many metrics you are sending.
+* How often you are sending them.
+A good practice is to initially do a *dry run* with the reporter, to see what would actually
+be pushed to Cloudwatch, without anything being pushed. *(see dry-run setting below)*
 
 Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-cloudwatch "0.7.1"]
+[samsara/trackit-cloudwatch "0.7.2"]
 ```
 
 And then start your reporting with:
@@ -716,15 +721,17 @@ And then start your reporting with:
    {:type                        :cloudwatch
     ;; The custom namespace in cloudwatch under which metrics will be published
     :namespace                   "trackit-namespace"
-    ;; The aws async client used to report push metrics. Most users don't need to
-    ;; provide this, but the option is provided for those who might need more control
+    ;; If present, the aws async client used to report push metrics. Most users don't need to
+    ;; provide this, but the option is provided for those who might need it
     :async-client                (.build (AmazonCloudWatchAsyncClientBuilder/standard))
-    ;; how often the stats will be reported to Cloudwatch
-    :reporting-frequency-seconds 30
+    ;; how often the stats will be reported to Cloudwatch, set to AWS default of 5 mins
+    :reporting-frequency-seconds 300
     ;; unit to use to display rates
     :rate-unit                   TimeUnit/SECONDS
     ;; unit to use to display durations
-    :duration-unit               TimeUnit/MILLISECONDS})
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; If present and truthy, will just print the metrics and NOT push to cloudwatch
+    :dry-run                     false})
 ```
 
 ### Selectively import reporters.
@@ -747,6 +754,6 @@ Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/tra
 
 ## License
 
-Copyright © 2015-2016 Samsara's authors.
+Copyright © 2015-2018 Samsara's authors.
 
 Distributed under the Apache License v 2.0 (http://www.apache.org/licenses/LICENSE-2.0)

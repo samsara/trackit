@@ -6,7 +6,8 @@
 
 (defn start-reporting
   [registry
-   {:keys [namespace async-client reporting-frequency-seconds rate-unit duration-unit]
+   {:keys [namespace async-client reporting-frequency-seconds rate-unit duration-unit
+           dry-run]
     :or   {async-client                (.build (AmazonCloudWatchAsyncClientBuilder/standard))
            reporting-frequency-seconds 300
            rate-unit                   TimeUnit/SECONDS
@@ -15,6 +16,7 @@
   (let [reporter         (-> (CloudWatchReporter/forRegistry registry async-client namespace)
                              (.convertRatesTo rate-unit)
                              (.convertDurationsTo duration-unit)
+                             (#(if dry-run (.withDryRun %) %))
                              (.build))]
     (.start reporter reporting-frequency-seconds TimeUnit/SECONDS)
     (fn [] (.stop reporter))))
