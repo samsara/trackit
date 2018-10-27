@@ -700,8 +700,6 @@ Finally you have to pass this function as `:metrics-attribute-filter my-filter`.
 NOTE: AWS costs money, please always consider the following
 * How many metrics you are sending.
 * How often you are sending them.
-A good practice is to initially do a *dry run* with the reporter, to see what would actually
-be pushed to Cloudwatch, without anything being pushed. *(see dry-run setting below)*
 
 Add the following dependency to your `project.clj`
 
@@ -715,23 +713,17 @@ And then start your reporting with:
 
 ```clojure
 (import 'java.util.concurrent.TimeUnit)
-(import 'com.amazonaws.services.cloudwatch.AmazonCloudWatchAsyncClientBuilder)
 
 (start-reporting!
    {:type                        :cloudwatch
     ;; The custom namespace in cloudwatch under which metrics will be published
-    :namespace                   "trackit-namespace"
-    ;; If present, the aws async client used to report push metrics. Most users don't need to
-    ;; provide this, but the option is provided for those who might need it
-    :async-client                (.build (AmazonCloudWatchAsyncClientBuilder/standard))
+    :namespace                   "trackit"
     ;; how often the stats will be reported to Cloudwatch, set to AWS default of 5 mins
     :reporting-frequency-seconds 300
     ;; unit to use to display rates
     :rate-unit                   TimeUnit/SECONDS
     ;; unit to use to display durations
-    :duration-unit               TimeUnit/MILLISECONDS
-    ;; If present and truthy, will just print the metrics and NOT push to cloudwatch
-    :dry-run                     false})
+    :duration-unit               TimeUnit/MILLISECONDS})
 ```
 
 ### Selectively import reporters.
