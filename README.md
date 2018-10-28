@@ -723,7 +723,9 @@ And then start your reporting with:
     ;; unit to use to display rates
     :rate-unit                   TimeUnit/SECONDS
     ;; unit to use to display durations
-    :duration-unit               TimeUnit/MILLISECONDS})
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; Global dimensions (optional) that are applied to all metrics
+    :global-dimensions           {"host" "node1", "version" "1.2.3"}})
 ```
 
 ### Selectively import reporters.
