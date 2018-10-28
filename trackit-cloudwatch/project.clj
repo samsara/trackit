@@ -13,4 +13,5 @@
 
   :dependencies [[samsara/trackit-core #=(ver)]
                  [io.github.azagniotov/dropwizard-metrics-cloudwatch "1.0.10"
-                  :exclusions [[ch.qos.logback/logback-classic]]]])
+                  :exclusions [[ch.qos.logback/logback-classic]]]
+                 [org.clojure/tools.logging "0.4.1"]])
