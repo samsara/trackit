@@ -12,4 +12,5 @@
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
   :dependencies [[samsara/trackit-core #=(ver)]
-                 [io.github.azagniotov/dropwizard-metrics-cloudwatch "1.0.10"]])
+                 [io.github.azagniotov/dropwizard-metrics-cloudwatch "1.0.10"
+                  :exclusions [[ch.qos.logback/logback-classic]]]])
