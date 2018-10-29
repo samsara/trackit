@@ -13,6 +13,7 @@ It can publish the metrics in any of the following systems:
   - Infuxdb
   - Reimann
   - NewRelic
+  - AWS Cloudwatch
 
 ## How to build
 
@@ -694,6 +695,39 @@ This function will return `true` only when the type is one of the listed types.
 Finally you have to pass this function as `:metrics-attribute-filter my-filter`.
 
 
+#### Cloudwatch
+
+NOTE: AWS costs money, please always consider the following
+* How many metrics you are sending.
+* How often you are sending them.
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-cloudwatch "0.7.2"]
+```
+
+And then start your reporting with:
+
+
+```clojure
+(import 'java.util.concurrent.TimeUnit)
+
+(start-reporting!
+   {:type                        :cloudwatch
+    ;; The custom namespace in cloudwatch under which metrics will be published
+    :namespace                   "trackit"
+    ;; how often the stats will be reported to Cloudwatch, set to AWS default of 5 mins
+    :reporting-frequency-seconds 300
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; Global dimensions (optional) that are applied to all metrics
+    :global-dimensions           {"host" "node1", "version" "1.2.3"}})
+```
+
 ### Selectively import reporters.
 
 Reporters and their dependencies are distributed into separate JAR files.
@@ -703,6 +737,7 @@ Here a breakdown of the different packages.
   * `[samsara/trackit-ganglia  "x.y.z"]` - required only when reporting to Ganglia
   * `[samsara/trackit-graphite "x.y.z"]` - required only when reporting to Graphite
   * `[samsara/trackit-influxdb "x.y.z"]` - required only when reporting to InfluxDB
+  * `[samsara/trackit-cloudwatch "x.y.z"]` - required only when reporting to AWS Cloudwatch
   * `[samsara/trackit-newrelic "x.y.z"]` - required only when reporting to NewRelic
   * `[samsara/trackit-riemann  "x.y.z"]` - required only when reporting to Riemann
   * `[samsara/trackit-statsd   "x.y.z"]` - required only when reporting to Statsd
@@ -713,6 +748,6 @@ Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/tra
 
 ## License
 
-Copyright © 2015-2016 Samsara's authors.
+Copyright © 2015-2018 Samsara's authors.
 
 Distributed under the Apache License v 2.0 (http://www.apache.org/licenses/LICENSE-2.0)

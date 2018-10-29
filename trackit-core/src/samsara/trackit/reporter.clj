@@ -150,3 +150,13 @@
   (load-dynamic-reporter "samsara.trackit.reporter-newrelic/start-reporting"
                          registry
                          cfg))
+
+(defmethod start-reporting :cloudwatch
+  [registry
+   {:keys [namespace reporting-frequency-seconds rate-unit duration-unit global-dimensions]
+    :or   {reporting-frequency-seconds 300
+           rate-unit TimeUnit/SECONDS duration-unit TimeUnit/MILLISECONDS}
+    :as   cfg}]
+  (load-dynamic-reporter "samsara.trackit.reporter-cloudwatch/start-reporting"
+                         registry
+                         cfg))
