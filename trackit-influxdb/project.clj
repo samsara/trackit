@@ -11,6 +11,8 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
+  :global-vars {*warn-on-reflection* true}
+
   :dependencies [[samsara/trackit-core #=(ver)]
                  ;;[metrics-clojure-influxdb "2.7.0"]
                  [com.izettle/dropwizard-metrics-influxdb "1.1.6"]

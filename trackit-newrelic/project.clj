@@ -11,6 +11,8 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
+  :global-vars {*warn-on-reflection* true}
+
   :java-source-paths ["src/java"]
 
   :dependencies [[samsara/trackit-core #=(ver)]

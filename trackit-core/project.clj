@@ -11,8 +11,10 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
+  :global-vars {*warn-on-reflection* true}
+
   :dependencies [[org.clojure/clojure "1.9.0"]
-                 [org.clojure/tools.logging "0.3.1"]
+                 [org.clojure/tools.logging "0.4.1"]
                  [metrics-clojure "2.10.0"]
                  [metrics-clojure-jvm "2.10.0"]]
 

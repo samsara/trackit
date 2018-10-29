@@ -11,6 +11,8 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
+  :global-vars {*warn-on-reflection* true}
+
   :dependencies [[samsara/trackit-core #=(ver)]
                  ;;[metrics-clojure-ganglia  "2.7.0"] ;; bug #71
                  [io.dropwizard.metrics/metrics-ganglia "3.1.1"]

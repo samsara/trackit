@@ -11,7 +11,8 @@
   :license {:name "Apache License 2.0"
             :url "http://www.apache.org/licenses/LICENSE-2.0"}
 
+  :global-vars {*warn-on-reflection* true}
+
   :dependencies [[samsara/trackit-core #=(ver)]
                  [io.github.azagniotov/dropwizard-metrics-cloudwatch "1.0.10"
-                  :exclusions [[ch.qos.logback/logback-classic]]]
-                 [org.clojure/tools.logging "0.4.1"]])
+                  :exclusions [[ch.qos.logback/logback-classic]]]])
