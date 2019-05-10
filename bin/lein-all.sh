@@ -23,4 +23,5 @@ leinit trackit-cloudwatch $*
 leinit trackit-newrelic $*
 leinit trackit-riemann $*
 leinit trackit-statsd $*
+leinit trackit-prometheus $*
 leinit trackit-all $*
