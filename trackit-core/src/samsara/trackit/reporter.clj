@@ -160,3 +160,14 @@
   (load-dynamic-reporter "samsara.trackit.reporter-cloudwatch/start-reporting"
                          registry
                          cfg))
+
+
+(defmethod start-reporting :prometheus
+  [registry
+   {:keys [reporter-name reporting-frequency-seconds rate-unit duration-unit push-gateway-url grouping-keys]
+    :or   {reporting-frequency-seconds 300
+           rate-unit TimeUnit/SECONDS duration-unit TimeUnit/MILLISECONDS}
+    :as   cfg}]
+  (load-dynamic-reporter "samsara.trackit.reporter-prometheus/start-reporting"
+                         registry
+                         cfg))

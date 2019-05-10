@@ -21,4 +21,4 @@
                  [samsara/trackit-newrelic   #=(ver)]
                  [samsara/trackit-riemann    #=(ver)]
                  [samsara/trackit-statsd     #=(ver)]
-                 ])
+                 [samsara/trackit-prometheus #=(ver)]])

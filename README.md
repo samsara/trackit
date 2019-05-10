@@ -14,6 +14,7 @@ It can publish the metrics in any of the following systems:
   - Reimann
   - NewRelic
   - AWS Cloudwatch
+  - Prometheus
 
 ## How to build
 
@@ -29,7 +30,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit-all "0.8.0"]
+[samsara/trackit-all "0.9.0"]
 ```
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
@@ -372,7 +373,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-graphite "0.8.0"]
+[samsara/trackit-graphite "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -401,7 +402,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-statsd "0.8.0"]
+[samsara/trackit-statsd "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -430,7 +431,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.8.0"]
+[samsara/trackit-riemann "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -461,7 +462,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-ganglia "0.8.0"]
+[samsara/trackit-ganglia "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -493,7 +494,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-influxdb "0.8.0"]
+[samsara/trackit-influxdb "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -530,7 +531,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.8.0"]
+[samsara/trackit-riemann "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -605,7 +606,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-newrelic "0.8.0"]
+[samsara/trackit-newrelic "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -705,7 +706,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-cloudwatch "0.8.0"]
+[samsara/trackit-cloudwatch "0.9.0"]
 ```
 
 And then start your reporting with:
@@ -728,20 +729,59 @@ And then start your reporting with:
     :global-dimensions           {"host" "node1", "version" "1.2.3"}})
 ```
 
+
+#### Prometheus
+
+TRACKit sends metrics to prometheus using the 'Prometheus Push Gateway'.
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-prometheus "0.9.0"]
+```
+
+And then start your reporting with:
+
+
+```clojure
+(import 'java.util.concurrent.TimeUnit)
+
+(start-reporting!
+   {:type                        :prometheus
+     ;; set the reported name
+    :reporter-name               "trackit-reporter"
+    ;; how often the stats will be reported to Prometheus
+    :reporting-frequency-seconds 300
+    ;; the url for the prometheus push gateway
+    :push-gateway-url            "localhost:9091"
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS
+    ;; Grouping Keys (optional) that are sent with all metrics
+    ;; Prometheus only allows alphanumerals and underscores for
+    ;; both keys and values of grouping-keys. All other characters
+    ;; will be replaced with an underscore before reporting to
+    ;; Prometheus
+    :grouping-keys              {"host" "node1", "version" "1_2_3"}})
+```
+
 ### Selectively import reporters.
 
 Reporters and their dependencies are distributed into separate JAR files.
 Here a breakdown of the different packages.
 
-  * `[samsara/trackit-core     "x.y.z"]` - core api, always required
-  * `[samsara/trackit-ganglia  "x.y.z"]` - required only when reporting to Ganglia
-  * `[samsara/trackit-graphite "x.y.z"]` - required only when reporting to Graphite
-  * `[samsara/trackit-influxdb "x.y.z"]` - required only when reporting to InfluxDB
+  * `[samsara/trackit-core       "x.y.z"]` - core api, always required
+  * `[samsara/trackit-ganglia    "x.y.z"]` - required only when reporting to Ganglia
+  * `[samsara/trackit-graphite   "x.y.z"]` - required only when reporting to Graphite
+  * `[samsara/trackit-influxdb   "x.y.z"]` - required only when reporting to InfluxDB
   * `[samsara/trackit-cloudwatch "x.y.z"]` - required only when reporting to AWS Cloudwatch
-  * `[samsara/trackit-newrelic "x.y.z"]` - required only when reporting to NewRelic
-  * `[samsara/trackit-riemann  "x.y.z"]` - required only when reporting to Riemann
-  * `[samsara/trackit-statsd   "x.y.z"]` - required only when reporting to Statsd
-  * `[samsara/trackit-all      "x.y.z"]` - use this one if you want bind them all in single dependency.
+  * `[samsara/trackit-newrelic   "x.y.z"]` - required only when reporting to NewRelic
+  * `[samsara/trackit-riemann    "x.y.z"]` - required only when reporting to Riemann
+  * `[samsara/trackit-statsd     "x.y.z"]` - required only when reporting to Statsd
+  * `[samsara/trackit-prometheus "x.y.z"]` - required only when reporting to prometheus
+  * `[samsara/trackit-all        "x.y.z"]` - use this one if you want bind them all in single dependency.
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
 
