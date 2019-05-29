@@ -328,6 +328,9 @@ then set `:jvm-metrics` to `:none`.
     })
 ```
 
+For JDK9+, you might need to change this setting, see the [troubleshooting](./doc/troubleshooting.md) page.
+
+
 ### Start reporting
 
 TRACKit! supports several reporting methods.
