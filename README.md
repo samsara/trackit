@@ -30,7 +30,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit-all "0.9.0"]
+[samsara/trackit-all "0.9.1"]
 ```
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
@@ -376,7 +376,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-graphite "0.9.0"]
+[samsara/trackit-graphite "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -405,7 +405,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-statsd "0.9.0"]
+[samsara/trackit-statsd "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -434,7 +434,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.9.0"]
+[samsara/trackit-riemann "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -465,7 +465,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-ganglia "0.9.0"]
+[samsara/trackit-ganglia "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -497,7 +497,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-influxdb "0.9.0"]
+[samsara/trackit-influxdb "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -534,7 +534,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.9.0"]
+[samsara/trackit-riemann "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -609,7 +609,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-newrelic "0.9.0"]
+[samsara/trackit-newrelic "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -709,7 +709,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-cloudwatch "0.9.0"]
+[samsara/trackit-cloudwatch "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -741,7 +741,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-prometheus "0.9.0"]
+[samsara/trackit-prometheus "0.9.1"]
 ```
 
 And then start your reporting with:
@@ -757,7 +757,7 @@ And then start your reporting with:
     ;; how often the stats will be reported to Prometheus
     :reporting-frequency-seconds 300
     ;; the url for the prometheus push gateway
-    :push-gateway-url            "localhost:9091"
+    :push-gateway-url            "http://localhost:9091"
     ;; unit to use to display rates
     :rate-unit                   TimeUnit/SECONDS
     ;; unit to use to display durations

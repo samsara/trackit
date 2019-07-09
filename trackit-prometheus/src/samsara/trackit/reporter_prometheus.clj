@@ -1,14 +1,12 @@
 (ns samsara.trackit.reporter-prometheus
-  (:import  [java.util.concurrent TimeUnit]
-            [com.codahale.metrics MetricFilter MetricRegistry ScheduledReporter]
-            [io.prometheus.client.exporter PushGateway]
-            [io.prometheus.client.dropwizard DropwizardExports]
-            [samsara PrometheusReporter]
-            [java.util HashMap])
-  (:require [samsara.trackit :as t]
-            [metrics.reporters :as mr]
-            [clojure.tools.logging :as log]
-            [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [metrics.reporters :as mr])
+  (:import [com.codahale.metrics MetricFilter MetricRegistry]
+           io.prometheus.client.dropwizard.DropwizardExports
+           io.prometheus.client.exporter.PushGateway
+           java.net.URL
+           java.util.concurrent.TimeUnit
+           samsara.PrometheusReporter))
 
 (defn sanitize-grouping-key
   "Prometheus does not like characters other than alpha-numeric and
@@ -30,13 +28,20 @@
      g))
 
 
+(defn push-gateway
+  [push-gateway-url]
+  (if (re-matches #"^(http|https)://.*" push-gateway-url)
+    (PushGateway. ^URL (URL. push-gateway-url))
+    (PushGateway. ^String push-gateway-url)))
+
+
 
 (defn prometheus-reporter
   [^MetricRegistry reg
    {:keys [reporter-name  push-gateway-url rate-unit duration-unit grouping-keys]
     :or {rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as opts}]
   (let [^Collector collector         (DropwizardExports. reg)
-        ^PushGateway push-gateway    (PushGateway. push-gateway-url)]
+        ^PushGateway push-gateway    (push-gateway push-gateway-url)]
     (PrometheusReporter. reg
                          (sanitize-grouping-key reporter-name)
                          MetricFilter/ALL

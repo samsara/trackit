@@ -17,8 +17,8 @@
 
   :dependencies [[samsara/trackit-core #=(ver)]
 
-                 [io.prometheus/simpleclient "0.0.14"]
-                 [io.prometheus/simpleclient_hotspot "0.0.14"]
-                 [io.prometheus/simpleclient_common "0.0.14"]
-                 [io.prometheus/simpleclient_pushgateway "0.0.14"]
-                 [io.prometheus/simpleclient_dropwizard "0.0.14"]])
+                 [io.prometheus/simpleclient "0.6.0"]
+                 [io.prometheus/simpleclient_hotspot "0.6.0"]
+                 [io.prometheus/simpleclient_common "0.6.0"]
+                 [io.prometheus/simpleclient_pushgateway "0.6.0"]
+                 [io.prometheus/simpleclient_dropwizard "0.6.0"]])
