@@ -762,6 +762,10 @@ And then start your reporting with:
     :rate-unit                   TimeUnit/SECONDS
     ;; unit to use to display durations
     :duration-unit               TimeUnit/MILLISECONDS
+    ;; if true it add a `:pid` as grouping key with a UUID unique per process
+    ;; this is useful to get metrics by process when multiple redundant instances
+    ;; are running and pushing metrics to the same PushGateway
+    :inject-pid?                 true
     ;; Grouping Keys (optional) that are sent with all metrics
     ;; Prometheus only allows alphanumerals and underscores for
     ;; both keys and values of grouping-keys. All other characters

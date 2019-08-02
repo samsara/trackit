@@ -8,6 +8,12 @@
            java.util.concurrent.TimeUnit
            samsara.PrometheusReporter))
 
+;; Metrics sent to a PushGateway need to be distinguishable process by process
+;; this ensures that all processes have their unique process id
+;; this will be injected as a grouping key `:pid`.
+(defonce pid (str (java.util.UUID/randomUUID)))
+
+
 (defn sanitize-grouping-key
   "Prometheus does not like characters other than alpha-numeric and
   underscores. Replace every other character with _"
@@ -38,10 +44,12 @@
 
 (defn prometheus-reporter
   [^MetricRegistry reg
-   {:keys [reporter-name  push-gateway-url rate-unit duration-unit grouping-keys]
-    :or {rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS} :as opts}]
+   {:keys [reporter-name  push-gateway-url rate-unit duration-unit grouping-keys inject-pid?]
+    :or {rate-unit TimeUnit/SECONDS, duration-unit TimeUnit/MILLISECONDS inject-pid? true} :as opts}]
   (let [^Collector collector         (DropwizardExports. reg)
-        ^PushGateway push-gateway    (push-gateway push-gateway-url)]
+        ^PushGateway push-gateway    (push-gateway push-gateway-url)
+        ;; inject unique `:pid` if not provided
+        grouping-keys (if inject-pid? (update grouping-keys :pid (fnil identity pid)) grouping-keys)]
     (PrometheusReporter. reg
                          (sanitize-grouping-key reporter-name)
                          MetricFilter/ALL
