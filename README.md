@@ -30,7 +30,7 @@ To use TRACKit! you need to add the following dependency to your
 `project.clj` file.
 
 ```
-[samsara/trackit-all "0.9.2"]
+[samsara/trackit-all "0.9.3"]
 ```
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
@@ -376,7 +376,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-graphite "0.9.2"]
+[samsara/trackit-graphite "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -405,7 +405,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-statsd "0.9.2"]
+[samsara/trackit-statsd "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -434,7 +434,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.9.2"]
+[samsara/trackit-riemann "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -465,7 +465,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-ganglia "0.9.2"]
+[samsara/trackit-ganglia "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -497,7 +497,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-influxdb "0.9.2"]
+[samsara/trackit-influxdb "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -534,7 +534,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-riemann "0.9.2"]
+[samsara/trackit-riemann "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -609,7 +609,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-newrelic "0.9.2"]
+[samsara/trackit-newrelic "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -709,7 +709,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-cloudwatch "0.9.2"]
+[samsara/trackit-cloudwatch "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -741,7 +741,7 @@ Add the following dependency to your `project.clj`
 
 ``` clojure
 ;; use same version as trackit-core
-[samsara/trackit-prometheus "0.9.2"]
+[samsara/trackit-prometheus "0.9.3"]
 ```
 
 And then start your reporting with:
@@ -774,6 +774,34 @@ And then start your reporting with:
     :grouping-keys              {"host" "node1", "version" "1_2_3"}})
 ```
 
+
+#### JMX
+
+TRACKit exposes metrics via JMX using the 'JMXReporter'.
+
+Add the following dependency to your `project.clj`
+
+``` clojure
+;; use same version as trackit-core
+[samsara/trackit-jmx "0.9.3"]
+```
+
+And then start your reporting with:
+
+
+```clojure
+(import 'java.util.concurrent.TimeUnit)
+
+(start-reporting!
+   {:type                        :jmx
+    ;; set the reported domain
+    :domain                      "trackit"
+    ;; unit to use to display rates
+    :rate-unit                   TimeUnit/SECONDS
+    ;; unit to use to display durations
+    :duration-unit               TimeUnit/MILLISECONDS}})
+```
+
 ### Selectively import reporters.
 
 Reporters and their dependencies are distributed into separate JAR files.
@@ -788,6 +816,7 @@ Here a breakdown of the different packages.
   * `[samsara/trackit-riemann    "x.y.z"]` - required only when reporting to Riemann
   * `[samsara/trackit-statsd     "x.y.z"]` - required only when reporting to Statsd
   * `[samsara/trackit-prometheus "x.y.z"]` - required only when reporting to prometheus
+  * `[samsara/trackit-jmx        "x.y.z"]` - required only when reporting via jmx
   * `[samsara/trackit-all        "x.y.z"]` - use this one if you want bind them all in single dependency.
 
 Latest version: [![Clojars Project](https://img.shields.io/clojars/v/samsara/trackit-all.svg)](https://clojars.org/samsara/trackit-all)
