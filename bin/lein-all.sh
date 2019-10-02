@@ -24,4 +24,5 @@ leinit trackit-newrelic $*
 leinit trackit-riemann $*
 leinit trackit-statsd $*
 leinit trackit-prometheus $*
+leinit trackit-jmx $*
 leinit trackit-all $*

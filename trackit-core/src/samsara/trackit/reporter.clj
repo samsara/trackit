@@ -171,3 +171,14 @@
   (load-dynamic-reporter "samsara.trackit.reporter-prometheus/start-reporting"
                          registry
                          cfg))
+
+
+(defmethod start-reporting :jmx
+  [registry
+   {:keys [domain rate-unit duration-unit]
+    :or  {domain "metrics"
+          rate-unit TimeUnit/SECONDS,
+          duration-unit TimeUnit/MILLISECONDS} :as cfg}]
+  (load-dynamic-reporter "samsara.trackit.reporter-jmx/start-reporting"
+                         registry
+                         cfg))
