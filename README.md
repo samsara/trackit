@@ -15,6 +15,7 @@ It can publish the metrics in any of the following systems:
   - NewRelic
   - AWS Cloudwatch
   - Prometheus
+  - JMX Beans
 
 ## How to build
 
